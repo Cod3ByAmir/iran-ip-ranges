@@ -1,0 +1,98 @@
+name: build
+
+on:
+  schedule:
+    - cron: "0 4 * * *"      # daily, 04:00 UTC
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Publish even if the safety guards trip"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build lists
+        id: build
+        run: |
+          python -m builder ${{ inputs.force == true && '--force' || '' }}
+
+      - name: Commit cache, state and dist
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A cache state dist
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+          else
+            git commit -m "build: ${{ steps.build.outputs.tag }} (changed=${{ steps.build.outputs.changed }})"
+            git push
+          fi
+
+      - name: Publish release
+        id: publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.build.outputs.tag }}
+          CHANGED: ${{ steps.build.outputs.changed }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          set -e
+          if [ "$CHANGED" != "true" ] && [ "$FORCE" != "true" ] && [ -n "$(gh release list --limit 1)" ]; then
+            echo "lists unchanged and a release already exists - skipping"
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "published=true" >> "$GITHUB_OUTPUT"
+          ASSETS="dist/iran-ipv4.txt dist/iran-ipv6.txt dist/iran-ipv4.nft dist/iran-ipv6.nft \
+                  dist/iran-ipv4.rsc dist/iran-ipv6.rsc dist/sha256sums.txt dist/version.txt \
+                  dist/meta.json dist/rejected-ipv4.txt dist/rejected-ipv6.txt"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" $ASSETS --clobber
+            gh release edit "$TAG" --notes-file dist/release-notes.md --latest
+          else
+            gh release create "$TAG" $ASSETS --title "$TAG" --notes-file dist/release-notes.md --latest
+          fi
+
+      - name: Prune old releases
+        if: steps.publish.outputs.published == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release list --limit 200 --json tagName --jq '.[].tagName' | sort -r | tail -n +31 | while read -r t; do
+            [ -n "$t" ] || continue
+            echo "pruning $t"
+            gh release delete "$t" --yes --cleanup-tag || true
+          done
+
+      - name: Open an issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Scheduled build failed"
+          if [ -z "$(gh issue list --state open --label build-failure --json number --jq '.[0].number')" ]; then
+            gh label create build-failure --color B60205 --description "automatic build failure" 2>/dev/null || true
+            gh issue create --title "$TITLE" --label build-failure \
+              --body "The build run ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} failed. Check the log; guards refuse to publish when sources are down or the list moves too much."
+          fi

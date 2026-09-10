@@ -1,0 +1,100 @@
+#!/bin/sh
+# pbr.user.iran - load pre-built Iranian IPv4/IPv6 prefixes into the pbr user sets.
+#
+# All fetching, parsing, validation, de-duplication and aggregation is done daily by
+# https://github.com/Cod3ByAmir/iran-ip-ranges . This script only downloads the ready
+# made element lists, verifies their checksums and hands them to nft. It is stateless:
+# no cache, no version comparison, every call does the whole job.
+
+IR_IFACE='wan'
+IR_TABLE='inet fw4'
+IR_REPO='Cod3ByAmir/iran-ip-ranges'
+IR_BASES="https://github.com/$IR_REPO/releases/latest/download https://raw.githubusercontent.com/$IR_REPO/main/dist"
+
+IR_TMP_DIR='/var/pbr-iran'
+IR_FETCH_TIMEOUT=20
+IR_MIN_V4=100
+IR_MIN_V6=20
+
+ir_log() {
+    logger -t pbr-iran "$1" 2>/dev/null
+    echo "pbr-iran: $1"
+}
+
+ir_fetch() {
+    # $1 url, $2 destination file
+    uclient-fetch -q -T "$IR_FETCH_TIMEOUT" -O "$2" "$1" 2>/dev/null && [ -s "$2" ] && return 0
+    uclient-fetch -q -T "$IR_FETCH_TIMEOUT" --no-check-certificate -O "$2" "$1" 2>/dev/null && [ -s "$2" ]
+}
+
+ir_pick_base() {
+    # Use the first base that serves the checksum file; every other file comes from the same base.
+    local base
+    for base in $IR_BASES; do
+        if ir_fetch "$base/sha256sums.txt" "$IR_TMP_DIR/sha256sums.txt"; then
+            IR_BASE="$base"
+            return 0
+        fi
+    done
+    return 1
+}
+
+ir_load() {
+    # $1 family (4|6), $2 file name, $3 minimum element count
+    local fam="$1" file="$2" min="$3"
+    local set="pbr_${IR_IFACE}_${fam}_dst_ip_user"
+    local count rules
+
+    if ! nft list set $IR_TABLE "$set" >/dev/null 2>&1; then
+        ir_log "set $set not found - skipping IPv$fam"
+        return 1
+    fi
+    if ! ir_fetch "$IR_BASE/$file" "$IR_TMP_DIR/$file"; then
+        ir_log "download failed: $IR_BASE/$file"
+        return 1
+    fi
+    if ! ( cd "$IR_TMP_DIR" && grep " $file\$" sha256sums.txt | sha256sum -c -s ); then
+        ir_log "checksum mismatch: $file"
+        return 1
+    fi
+    count=$(( $(tr -cd ',' < "$IR_TMP_DIR/$file" | wc -c) + 1 ))
+    if [ "$count" -lt "$min" ]; then
+        ir_log "$file too short ($count entries, need $min)"
+        return 1
+    fi
+
+    rules="$IR_TMP_DIR/rules$fam.nft"
+    {
+        echo "flush set $IR_TABLE $set"
+        printf 'add element %s %s { ' "$IR_TABLE" "$set"
+        cat "$IR_TMP_DIR/$file"
+        echo ' }'
+    } > "$rules"
+
+    if nft -f "$rules"; then
+        ir_log "loaded $count Iranian IPv$fam prefixes into $set"
+        return 0
+    fi
+    ir_log "nft rejected the element list for $set"
+    return 1
+}
+
+ir_main() {
+    local rc=0
+    rm -rf "$IR_TMP_DIR"
+    mkdir -p "$IR_TMP_DIR" || return 1
+
+    if ! ir_pick_base; then
+        ir_log "download failed: sha256sums.txt from every source"
+        rm -rf "$IR_TMP_DIR"
+        return 1
+    fi
+
+    ir_load 4 iran-ipv4.nft "$IR_MIN_V4" || rc=1
+    ir_load 6 iran-ipv6.nft "$IR_MIN_V6" || rc=1
+
+    rm -rf "$IR_TMP_DIR"
+    return $rc
+}
+
+ir_main

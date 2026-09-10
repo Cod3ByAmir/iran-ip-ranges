@@ -1,0 +1,141 @@
+{
+  "build_time": "2026-09-10T22:20:27+00:00",
+  "tag": "v2026.09.10",
+  "changed": true,
+  "sources": {
+    "ripestat-country": {
+      "tier": "A",
+      "fresh": true,
+      "url": "https://stat.ripe.net/data/country-resource-list/data.json?resource=IR&v4_format=prefix&sourceapp=iran-ip-ranges-github",
+      "error": "",
+      "prefixes": 2529,
+      "dropped_by_normalize": 0
+    },
+    "ipverse-rir-ipv4": {
+      "tier": "A",
+      "fresh": true,
+      "url": "https://raw.githubusercontent.com/ipverse/rir-ip/master/country/ir/ipv4-aggregated.txt",
+      "error": "",
+      "prefixes": 1740,
+      "dropped_by_normalize": 0
+    },
+    "ipverse-rir-ipv6": {
+      "tier": "A",
+      "fresh": true,
+      "url": "https://raw.githubusercontent.com/ipverse/rir-ip/master/country/ir/ipv6-aggregated.txt",
+      "error": "",
+      "prefixes": 570,
+      "dropped_by_normalize": 0
+    },
+    "ipdeny-ipv4": {
+      "tier": "A",
+      "fresh": true,
+      "url": "https://www.ipdeny.com/ipblocks/data/countries/ir.zone",
+      "error": "",
+      "prefixes": 1958,
+      "dropped_by_normalize": 0
+    },
+    "ipdeny-ipv6": {
+      "tier": "A",
+      "fresh": true,
+      "url": "https://www.ipdeny.com/ipv6/ipaddresses/aggregated/ir-aggregated.zone",
+      "error": "",
+      "prefixes": 570,
+      "dropped_by_normalize": 0
+    },
+    "iwik-geolite2": {
+      "tier": "B",
+      "fresh": true,
+      "url": "https://www.iwik.org/ipcountry/IR.cidr",
+      "error": "",
+      "prefixes": 2076,
+      "dropped_by_normalize": 0
+    },
+    "firehol-geolite2": {
+      "tier": "B",
+      "fresh": true,
+      "url": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/geolite2_country/country_ir.netset",
+      "error": "",
+      "prefixes": 1874,
+      "dropped_by_normalize": 0
+    },
+    "firehol-ip2location": {
+      "tier": "B",
+      "fresh": true,
+      "url": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/ip2location_country/ip2location_country_ir.netset",
+      "error": "",
+      "prefixes": 2009,
+      "dropped_by_normalize": 0
+    },
+    "dbip-country-lite": {
+      "tier": "B",
+      "fresh": true,
+      "url": "https://download.db-ip.com/free/dbip-country-lite-2026-09.csv.gz",
+      "error": "",
+      "prefixes": 3064,
+      "dropped_by_normalize": 0
+    },
+    "loyalsoldier-geoip": {
+      "tier": "B",
+      "fresh": true,
+      "url": "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/ir.txt",
+      "error": "",
+      "prefixes": 2784,
+      "dropped_by_normalize": 0
+    },
+    "arastu": {
+      "tier": "D",
+      "fresh": true,
+      "url": "https://raw.githubusercontent.com/arastu/iran_ip_ranges/master/iran_ip_range.txt",
+      "error": "",
+      "prefixes": 1525,
+      "dropped_by_normalize": 0
+    },
+    "ramtiiin": {
+      "tier": "D",
+      "fresh": true,
+      "url": "https://raw.githubusercontent.com/Ramtiiin/iran-ip/main/ip-list.rsc",
+      "error": "",
+      "prefixes": 1387,
+      "dropped_by_normalize": 1
+    },
+    "arvancloud": {
+      "tier": "D",
+      "fresh": true,
+      "url": "https://www.arvancloud.ir/en/ips.txt",
+      "error": "",
+      "prefixes": 14,
+      "dropped_by_normalize": 0
+    },
+    "farshidmousavii": {
+      "tier": "D",
+      "fresh": true,
+      "url": "https://raw.githubusercontent.com/farshidmousavii/iran-ip-ranges/main/dist/raw/ipv4.txt",
+      "error": "",
+      "prefixes": 1803,
+      "dropped_by_normalize": 0
+    },
+    "ripestat-announced": {
+      "tier": "C",
+      "fresh": true,
+      "url": "RIPEstat announced-prefixes for 856 ASNs",
+      "error": "",
+      "prefixes": 9531,
+      "dropped_by_normalize": 0
+    }
+  },
+  "tier_d": {
+    "accepted_prefixes": 2096,
+    "rejected_records": 320
+  },
+  "output": {
+    "ipv4": {
+      "prefixes": 2085,
+      "addresses": 11174880
+    },
+    "ipv6": {
+      "prefixes": 766,
+      "addresses": 327980136342453471435556141400064
+    }
+  }
+}
