@@ -13,8 +13,8 @@
 5.222.0.0/15	non-IR part of 5.220.0.0/14, IR parts kept
 5.226.48.0/21	registry country is not IR
 31.7.80.0/21	non-IR part of 31.7.64.0/18, IR parts kept
-31.7.92.0/22	non-IR part of 31.7.64.0/18, IR parts kept
 31.7.80.0/21	non-IR part of 31.7.64.0/19, IR parts kept
+31.7.92.0/22	non-IR part of 31.7.64.0/18, IR parts kept
 31.7.92.0/22	non-IR part of 31.7.64.0/19, IR parts kept
 31.25.88.0/23	non-IR part of 31.25.88.0/21, IR parts kept
 31.25.234.0/23	non-IR part of 31.25.232.0/21, IR parts kept
@@ -167,8 +167,8 @@
 178.173.224.0/19	non-IR part of 178.173.128.0/17, IR parts kept
 178.173.224.0/19	registry country is not IR
 178.236.36.0/22	non-IR part of 178.236.32.0/20, IR parts kept
-178.236.40.0/21	non-IR part of 178.236.32.0/20, IR parts kept
 178.236.36.0/22	non-IR part of 178.236.32.0/21, IR parts kept
+178.236.40.0/21	non-IR part of 178.236.32.0/20, IR parts kept
 178.253.0.0/18	registry country is not IR
 179.60.151.0/24	registry country is not IR
 185.4.220.0/22	registry country is not IR

@@ -1,6 +1,6 @@
 # Iran IP ranges v2026.09.10
 
-Built 2026-09-10T22:20:27+00:00.
+Built 2026-09-10T22:26:26+00:00.
 
 | Family | Prefixes | Addresses |
 |---|---|---|
