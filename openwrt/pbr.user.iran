@@ -6,6 +6,13 @@
 # made element lists, verifies their checksums and hands them to nft. It is stateless:
 # no cache, no version comparison, every call does the whole job.
 #
+# Two run modes, detected automatically:
+#   pbr mode    - pbr runs this file while building /var/run/pbr.nft. There `nft` is a shell
+#                 function that queues commands into that batch, and the sets do not exist in
+#                 the kernel yet. We queue one "add element" per family; pbr installs the batch.
+#   direct mode - run by hand or from cron after pbr is up. We check that the set exists and
+#                 apply "flush set" + "add element" as one atomic nft transaction.
+#
 # Logs go to syslog (tag pbr-iran, see `logread | grep pbr-iran`) and to stdout.
 
 IR_IFACE='wan'
@@ -19,6 +26,7 @@ IR_MIN_V4=100
 IR_MIN_V6=20
 
 IR_BASE=''
+IR_MODE='direct'
 IR_START=$(date +%s)
 
 ir_log() {
@@ -31,6 +39,24 @@ ir_log() {
     esac
     logger -t pbr-iran -p "$prio" "$2" 2>/dev/null
     echo "pbr-iran [$1]: $2"
+}
+
+ir_detect_mode() {
+    case "$(type nft 2>/dev/null)" in
+        *function*) IR_MODE='pbr' ;;
+        *)          IR_MODE='direct' ;;
+    esac
+}
+
+ir_family_enabled() {
+    # $1 family (4|6), $2 set name. Returns 0 if the pbr set is expected to exist.
+    if [ "$IR_MODE" = 'pbr' ]; then
+        # sets are created later from the batch, so consult the pbr config instead
+        [ "$1" = '4' ] && return 0
+        [ "$(uci -q get pbr.config.ipv6_enabled)" = '1' ]
+        return $?
+    fi
+    /usr/sbin/nft list set $IR_TABLE "$2" >/dev/null 2>&1
 }
 
 ir_fetch() {
@@ -63,11 +89,11 @@ ir_load() {
     local set="pbr_${IR_IFACE}_${fam}_dst_ip_user"
     local count size rules
 
-    ir_log info "IPv$fam: target set $IR_TABLE $set"
-    if ! nft list set $IR_TABLE "$set" >/dev/null 2>&1; then
-        ir_log warn "IPv$fam: set $set not found (pbr IPv$fam disabled?) - skipping"
-        return 1
+    if ! ir_family_enabled "$fam" "$set"; then
+        ir_log info "IPv$fam: set $set not available (pbr IPv$fam disabled) - skipping"
+        return 2
     fi
+    ir_log info "IPv$fam: target set $IR_TABLE $set"
 
     if ! ir_fetch "$IR_BASE/$file" "$IR_TMP_DIR/$file"; then
         ir_log err "IPv$fam: download failed: $IR_BASE/$file"
@@ -89,6 +115,13 @@ ir_load() {
     fi
     ir_log info "IPv$fam: $count prefixes in list"
 
+    if [ "$IR_MODE" = 'pbr' ]; then
+        # queue into pbr's batch; the set is created fresh in the same batch, nothing to flush
+        nft "add element $IR_TABLE $set { $(cat "$IR_TMP_DIR/$file") }"
+        ir_log info "IPv$fam: queued $count prefixes for $set (pbr installs the batch)"
+        return 0
+    fi
+
     rules="$IR_TMP_DIR/rules$fam.nft"
     {
         echo "flush set $IR_TABLE $set"
@@ -97,7 +130,7 @@ ir_load() {
         echo ' }'
     } > "$rules"
 
-    if nft -f "$rules" 2>"$IR_TMP_DIR/nft$fam.err"; then
+    if /usr/sbin/nft -f "$rules" 2>"$IR_TMP_DIR/nft$fam.err"; then
         ir_log info "IPv$fam: loaded $count prefixes into $set (flushed old content first)"
         return 0
     fi
@@ -105,10 +138,19 @@ ir_load() {
     return 1
 }
 
-ir_main() {
-    local rc4=1 rc6=1 elapsed
+ir_status() {
+    case "$1" in
+        0) echo ok ;;
+        2) echo skipped ;;
+        *) echo FAILED ;;
+    esac
+}
 
-    ir_log info "run started (repo $IR_REPO)"
+ir_main() {
+    local rc4 rc6 elapsed
+
+    ir_detect_mode
+    ir_log info "run started in $IR_MODE mode (repo $IR_REPO)"
     rm -rf "$IR_TMP_DIR"
     if ! mkdir -p "$IR_TMP_DIR"; then
         ir_log err "cannot create $IR_TMP_DIR - aborting"
@@ -121,17 +163,18 @@ ir_main() {
         return 1
     fi
 
-    ir_load 4 iran-ipv4.nft "$IR_MIN_V4" && rc4=0
-    ir_load 6 iran-ipv6.nft "$IR_MIN_V6" && rc6=0
+    ir_load 4 iran-ipv4.nft "$IR_MIN_V4"; rc4=$?
+    ir_load 6 iran-ipv6.nft "$IR_MIN_V6"; rc6=$?
 
     rm -rf "$IR_TMP_DIR"
     elapsed=$(( $(date +%s) - IR_START ))
 
-    if [ "$rc4" -eq 0 ] && [ "$rc6" -eq 0 ]; then
-        ir_log info "run finished OK in ${elapsed}s: IPv4 ok, IPv6 ok"
+    # 0 = loaded, 2 = family disabled in pbr (not an error), anything else = failure
+    if [ "$rc4" -ne 1 ] && [ "$rc6" -ne 1 ]; then
+        ir_log info "run finished OK in ${elapsed}s: IPv4 $(ir_status $rc4), IPv6 $(ir_status $rc6)"
         return 0
     fi
-    ir_log warn "run finished with problems in ${elapsed}s: IPv4 $([ $rc4 -eq 0 ] && echo ok || echo FAILED), IPv6 $([ $rc6 -eq 0 ] && echo ok || echo FAILED)"
+    ir_log warn "run finished with problems in ${elapsed}s: IPv4 $(ir_status $rc4), IPv6 $(ir_status $rc6)"
     return 1
 }
 

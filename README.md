@@ -74,9 +74,14 @@ python3 -m builder --force    # ignore the guards
 [pbr](https://docs.openwrt.melmac.net/pbr/) package. It downloads the two `.nft` files and the
 checksum file, verifies them with busybox `sha256sum`, checks a minimum element count, and loads
 each family into the pbr user sets `pbr_wan_4_dst_ip_user` and `pbr_wan_6_dst_ip_user` in a
-single atomic `flush set` + `add element` transaction. No grep, awk or sort runs on the router.
-It is stateless: no cache, no version comparison, every call does the whole job. A failure in
-one family never blocks the other.
+single transaction. No grep, awk or sort runs on the router. It is stateless: no cache, no
+version comparison, every call does the whole job. A failure in one family never blocks the other.
+
+It detects how it was started. When pbr runs it while building `/var/run/pbr.nft`, `nft` is a
+shell function that queues commands into that batch and the sets do not exist yet, so the script
+queues one `add element` per family and reads `pbr.config.ipv6_enabled` to know whether the IPv6
+set will exist. When run by hand or from cron, it checks the set in the kernel and applies
+`flush set` + `add element` as one atomic `nft -f` transaction.
 
 ```sh
 # install
