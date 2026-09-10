@@ -5,6 +5,8 @@
 # https://github.com/Cod3ByAmir/iran-ip-ranges . This script only downloads the ready
 # made element lists, verifies their checksums and hands them to nft. It is stateless:
 # no cache, no version comparison, every call does the whole job.
+#
+# Logs go to syslog (tag pbr-iran, see `logread | grep pbr-iran`) and to stdout.
 
 IR_IFACE='wan'
 IR_TABLE='inet fw4'
@@ -16,14 +18,27 @@ IR_FETCH_TIMEOUT=20
 IR_MIN_V4=100
 IR_MIN_V6=20
 
+IR_BASE=''
+IR_START=$(date +%s)
+
 ir_log() {
-    logger -t pbr-iran "$1" 2>/dev/null
-    echo "pbr-iran: $1"
+    # $1 level (info|warn|err), $2 message
+    local prio
+    case "$1" in
+        err)  prio='daemon.err' ;;
+        warn) prio='daemon.warn' ;;
+        *)    prio='daemon.info' ;;
+    esac
+    logger -t pbr-iran -p "$prio" "$2" 2>/dev/null
+    echo "pbr-iran [$1]: $2"
 }
 
 ir_fetch() {
     # $1 url, $2 destination file
-    uclient-fetch -q -T "$IR_FETCH_TIMEOUT" -O "$2" "$1" 2>/dev/null && [ -s "$2" ] && return 0
+    if uclient-fetch -q -T "$IR_FETCH_TIMEOUT" -O "$2" "$1" 2>/dev/null && [ -s "$2" ]; then
+        return 0
+    fi
+    ir_log warn "fetch failed with certificate check, retrying without: $1"
     uclient-fetch -q -T "$IR_FETCH_TIMEOUT" --no-check-certificate -O "$2" "$1" 2>/dev/null && [ -s "$2" ]
 }
 
@@ -31,10 +46,13 @@ ir_pick_base() {
     # Use the first base that serves the checksum file; every other file comes from the same base.
     local base
     for base in $IR_BASES; do
+        ir_log info "trying source: $base"
         if ir_fetch "$base/sha256sums.txt" "$IR_TMP_DIR/sha256sums.txt"; then
             IR_BASE="$base"
+            ir_log info "using source: $base ($(wc -l < "$IR_TMP_DIR/sha256sums.txt") checksums)"
             return 0
         fi
+        ir_log warn "source unavailable: $base"
     done
     return 1
 }
@@ -43,25 +61,33 @@ ir_load() {
     # $1 family (4|6), $2 file name, $3 minimum element count
     local fam="$1" file="$2" min="$3"
     local set="pbr_${IR_IFACE}_${fam}_dst_ip_user"
-    local count rules
+    local count size rules
 
+    ir_log info "IPv$fam: target set $IR_TABLE $set"
     if ! nft list set $IR_TABLE "$set" >/dev/null 2>&1; then
-        ir_log "set $set not found - skipping IPv$fam"
+        ir_log warn "IPv$fam: set $set not found (pbr IPv$fam disabled?) - skipping"
         return 1
     fi
+
     if ! ir_fetch "$IR_BASE/$file" "$IR_TMP_DIR/$file"; then
-        ir_log "download failed: $IR_BASE/$file"
+        ir_log err "IPv$fam: download failed: $IR_BASE/$file"
         return 1
     fi
+    size=$(wc -c < "$IR_TMP_DIR/$file")
+    ir_log info "IPv$fam: downloaded $file ($size bytes)"
+
     if ! ( cd "$IR_TMP_DIR" && grep " $file\$" sha256sums.txt | sha256sum -c -s ); then
-        ir_log "checksum mismatch: $file"
+        ir_log err "IPv$fam: checksum mismatch for $file - not loading"
         return 1
     fi
+    ir_log info "IPv$fam: checksum verified"
+
     count=$(( $(tr -cd ',' < "$IR_TMP_DIR/$file" | wc -c) + 1 ))
     if [ "$count" -lt "$min" ]; then
-        ir_log "$file too short ($count entries, need $min)"
+        ir_log err "IPv$fam: list too short ($count entries, need at least $min) - not loading"
         return 1
     fi
+    ir_log info "IPv$fam: $count prefixes in list"
 
     rules="$IR_TMP_DIR/rules$fam.nft"
     {
@@ -71,30 +97,42 @@ ir_load() {
         echo ' }'
     } > "$rules"
 
-    if nft -f "$rules"; then
-        ir_log "loaded $count Iranian IPv$fam prefixes into $set"
+    if nft -f "$rules" 2>"$IR_TMP_DIR/nft$fam.err"; then
+        ir_log info "IPv$fam: loaded $count prefixes into $set (flushed old content first)"
         return 0
     fi
-    ir_log "nft rejected the element list for $set"
+    ir_log err "IPv$fam: nft rejected the element list for $set: $(head -c 300 "$IR_TMP_DIR/nft$fam.err" | tr '\n' ' ')"
     return 1
 }
 
 ir_main() {
-    local rc=0
+    local rc4=1 rc6=1 elapsed
+
+    ir_log info "run started (repo $IR_REPO)"
     rm -rf "$IR_TMP_DIR"
-    mkdir -p "$IR_TMP_DIR" || return 1
+    if ! mkdir -p "$IR_TMP_DIR"; then
+        ir_log err "cannot create $IR_TMP_DIR - aborting"
+        return 1
+    fi
 
     if ! ir_pick_base; then
-        ir_log "download failed: sha256sums.txt from every source"
+        ir_log err "no source reachable for sha256sums.txt - sets left untouched"
         rm -rf "$IR_TMP_DIR"
         return 1
     fi
 
-    ir_load 4 iran-ipv4.nft "$IR_MIN_V4" || rc=1
-    ir_load 6 iran-ipv6.nft "$IR_MIN_V6" || rc=1
+    ir_load 4 iran-ipv4.nft "$IR_MIN_V4" && rc4=0
+    ir_load 6 iran-ipv6.nft "$IR_MIN_V6" && rc6=0
 
     rm -rf "$IR_TMP_DIR"
-    return $rc
+    elapsed=$(( $(date +%s) - IR_START ))
+
+    if [ "$rc4" -eq 0 ] && [ "$rc6" -eq 0 ]; then
+        ir_log info "run finished OK in ${elapsed}s: IPv4 ok, IPv6 ok"
+        return 0
+    fi
+    ir_log warn "run finished with problems in ${elapsed}s: IPv4 $([ $rc4 -eq 0 ] && echo ok || echo FAILED), IPv6 $([ $rc6 -eq 0 ] && echo ok || echo FAILED)"
+    return 1
 }
 
 ir_main
