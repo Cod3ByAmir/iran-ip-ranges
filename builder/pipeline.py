@@ -221,8 +221,8 @@ def write_outputs(results: dict, final: dict, rejected: list[dict], tier_d_accep
             "# Tier D (community list) entries removed by the cleaning rule\n"
             + "".join(f"{r['prefix']}\t{r['reason']}\n" for r in rej), encoding="utf-8")
 
-    # Xray / v2fly GeoIP file with a single IR entry (IPv4 + IPv6): use as ext:cgp.dat:ir
-    (DIST / "cgp.dat").write_bytes(geoip.encode_geoip_list({"IR": final[4] + final[6]}))
+    # Xray / v2fly GeoIP file with a single IR entry, IPv4 only: use as ext:cgp.dat:ir
+    (DIST / "cgp.dat").write_bytes(geoip.encode_geoip_list({"IR": final[4]}))
 
     (DIST / "version.txt").write_text(now.strftime("%Y-%m-%dT%H:%M:%SZ") + "\n", encoding="utf-8")
 
