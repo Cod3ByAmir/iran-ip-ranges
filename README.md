@@ -15,6 +15,7 @@ Stable URLs, always pointing at the newest release:
 | `.../iran-ipv6.txt` | same for IPv6 |
 | `.../iran-ipv4.nft`, `.../iran-ipv6.nft` | the same lists pre-joined as `a, b, c` for an nft `add element` |
 | `.../iran-ipv4.rsc`, `.../iran-ipv6.rsc` | MikroTik RouterOS address-list import |
+| `.../cgp.dat` | Xray / v2fly GeoIP file with a single `IR` entry (IPv4 and IPv6), for use alongside the stock `geoip.dat` |
 | `.../sha256sums.txt` | checksums of every asset |
 | `.../version.txt` | build timestamp |
 | `.../meta.json` | per-source status and counts for the build |
@@ -66,6 +67,16 @@ Runs daily at 04:00 UTC and on manual dispatch. Python 3 standard library only, 
 ```sh
 python3 -m builder            # build into dist/
 python3 -m builder --force    # ignore the guards
+```
+
+## Xray / v2fly
+
+`cgp.dat` is a complete GeoIP file in the v2fly protobuf format that contains only Iran under
+the tag `IR`. Put it next to the stock `geoip.dat` in Xray's asset directory and reference it
+from a routing rule:
+
+```json
+{"type": "field", "ip": ["ext:cgp.dat:ir"], "outboundTag": "direct"}
 ```
 
 ## OpenWrt / pbr

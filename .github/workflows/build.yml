@@ -66,7 +66,7 @@ jobs:
           echo "published=true" >> "$GITHUB_OUTPUT"
           ASSETS="dist/iran-ipv4.txt dist/iran-ipv6.txt dist/iran-ipv4.nft dist/iran-ipv6.nft \
                   dist/iran-ipv4.rsc dist/iran-ipv6.rsc dist/sha256sums.txt dist/version.txt \
-                  dist/meta.json dist/rejected-ipv4.txt dist/rejected-ipv6.txt"
+                  dist/meta.json dist/rejected-ipv4.txt dist/rejected-ipv6.txt dist/cgp.dat"
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" $ASSETS --clobber
             gh release edit "$TAG" --notes-file dist/release-notes.md --latest
