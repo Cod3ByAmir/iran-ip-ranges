@@ -1,6 +1,6 @@
-# Iran IP ranges v2026.09.12
+# Iran IP ranges v2026.09.13
 
-Built 2026-09-12T08:11:00+00:00.
+Built 2026-09-13T08:35:55+00:00.
 
 | Family | Prefixes | Addresses |
 |---|---|---|
@@ -9,12 +9,12 @@ Built 2026-09-12T08:11:00+00:00.
 
 | Source | Tier | Fresh | Prefixes |
 |---|---|---|---|
-| ripestat-country | A | yes | 2529 |
+| ripestat-country | A | yes | 2531 |
 | ipverse-rir-ipv4 | A | yes | 1742 |
 | ipverse-rir-ipv6 | A | yes | 570 |
-| ipdeny-ipv4 | A | yes | 1958 |
+| ipdeny-ipv4 | A | yes | 1960 |
 | ipdeny-ipv6 | A | yes | 570 |
-| iwik-geolite2 | B | yes | 2076 |
+| iwik-geolite2 | B | yes | 2077 |
 | firehol-geolite2 | B | yes | 1874 |
 | firehol-ip2location | B | yes | 2009 |
 | dbip-country-lite | B | yes | 3064 |
@@ -22,7 +22,7 @@ Built 2026-09-12T08:11:00+00:00.
 | arastu | D | yes | 1525 |
 | ramtiiin | D | yes | 1387 |
 | arvancloud | D | yes | 14 |
-| farshidmousavii | D | yes | 1803 |
-| ripestat-announced | C | yes | 9518 |
+| farshidmousavii | D | yes | 1805 |
+| ripestat-announced | C | yes | 9513 |
 
-Tier D cleaning: 2096 prefixes accepted, 320 rejection records (see rejected-ipv4.txt / rejected-ipv6.txt).
+Tier D cleaning: 2098 prefixes accepted, 320 rejection records (see rejected-ipv4.txt / rejected-ipv6.txt).

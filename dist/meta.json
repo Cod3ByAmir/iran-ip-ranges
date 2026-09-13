@@ -1,14 +1,14 @@
 {
-  "build_time": "2026-09-12T08:11:00+00:00",
-  "tag": "v2026.09.12",
-  "changed": true,
+  "build_time": "2026-09-13T08:35:55+00:00",
+  "tag": "v2026.09.13",
+  "changed": false,
   "sources": {
     "ripestat-country": {
       "tier": "A",
       "fresh": true,
       "url": "https://stat.ripe.net/data/country-resource-list/data.json?resource=IR&v4_format=prefix&sourceapp=iran-ip-ranges-github",
       "error": "",
-      "prefixes": 2529,
+      "prefixes": 2531,
       "dropped_by_normalize": 0
     },
     "ipverse-rir-ipv4": {
@@ -32,7 +32,7 @@
       "fresh": true,
       "url": "https://www.ipdeny.com/ipblocks/data/countries/ir.zone",
       "error": "",
-      "prefixes": 1958,
+      "prefixes": 1960,
       "dropped_by_normalize": 0
     },
     "ipdeny-ipv6": {
@@ -48,7 +48,7 @@
       "fresh": true,
       "url": "https://www.iwik.org/ipcountry/IR.cidr",
       "error": "",
-      "prefixes": 2076,
+      "prefixes": 2077,
       "dropped_by_normalize": 0
     },
     "firehol-geolite2": {
@@ -112,7 +112,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/farshidmousavii/iran-ip-ranges/main/dist/raw/ipv4.txt",
       "error": "",
-      "prefixes": 1803,
+      "prefixes": 1805,
       "dropped_by_normalize": 0
     },
     "ripestat-announced": {
@@ -120,12 +120,12 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 856 ASNs",
       "error": "",
-      "prefixes": 9518,
+      "prefixes": 9513,
       "dropped_by_normalize": 0
     }
   },
   "tier_d": {
-    "accepted_prefixes": 2096,
+    "accepted_prefixes": 2098,
     "rejected_records": 320
   },
   "output": {
