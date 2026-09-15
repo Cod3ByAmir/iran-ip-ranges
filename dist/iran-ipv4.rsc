@@ -2068,7 +2068,7 @@ add address=217.26.222.0/24 list=IRAN
 add address=217.60.236.0/24 list=IRAN
 add address=217.60.238.0/24 list=IRAN
 add address=217.60.241.0/24 list=IRAN
-add address=217.60.243.0/24 list=IRAN
+add address=217.60.242.0/23 list=IRAN
 add address=217.60.247.0/24 list=IRAN
 add address=217.60.255.0/24 list=IRAN
 add address=217.66.192.0/19 list=IRAN
