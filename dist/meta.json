@@ -1,7 +1,7 @@
 {
-  "build_time": "2026-09-16T08:53:44+00:00",
-  "tag": "v2026.09.16",
-  "changed": false,
+  "build_time": "2026-09-17T08:57:55+00:00",
+  "tag": "v2026.09.17",
+  "changed": true,
   "sources": {
     "ripestat-country": {
       "tier": "A",
@@ -48,7 +48,7 @@
       "fresh": true,
       "url": "https://www.iwik.org/ipcountry/IR.cidr",
       "error": "",
-      "prefixes": 2077,
+      "prefixes": 2079,
       "dropped_by_normalize": 0
     },
     "firehol-geolite2": {
@@ -64,7 +64,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/ip2location_country/ip2location_country_ir.netset",
       "error": "",
-      "prefixes": 2009,
+      "prefixes": 2021,
       "dropped_by_normalize": 0
     },
     "dbip-country-lite": {
@@ -80,7 +80,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/ir.txt",
       "error": "",
-      "prefixes": 2784,
+      "prefixes": 2787,
       "dropped_by_normalize": 0
     },
     "arastu": {
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 856 ASNs",
       "error": "",
-      "prefixes": 9569,
+      "prefixes": 9553,
       "dropped_by_normalize": 0
     }
   },
@@ -130,8 +130,8 @@
   },
   "output": {
     "ipv4": {
-      "prefixes": 2087,
-      "addresses": 11181280
+      "prefixes": 2102,
+      "addresses": 11185376
     },
     "ipv6": {
       "prefixes": 766,
