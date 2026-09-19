@@ -558,6 +558,7 @@ add address=2a0e:b107:ccd::/48 list=IRAN
 add address=2a0e:b107:2111::/48 list=IRAN
 add address=2a0e:c600::/32 list=IRAN
 add address=2a0e:d540::/29 list=IRAN
+add address=2a0e:e780::/29 list=IRAN
 add address=2a0e:ea00::/29 list=IRAN
 add address=2a0e:f3c0::/29 list=IRAN
 add address=2a0f:1cc5:1f97::/48 list=IRAN

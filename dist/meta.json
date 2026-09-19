@@ -1,7 +1,7 @@
 {
-  "build_time": "2026-09-18T08:33:45+00:00",
-  "tag": "v2026.09.18",
-  "changed": false,
+  "build_time": "2026-09-19T08:20:33+00:00",
+  "tag": "v2026.09.19",
+  "changed": true,
   "sources": {
     "ripestat-country": {
       "tier": "A",
@@ -24,7 +24,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/ipverse/rir-ip/master/country/ir/ipv6-aggregated.txt",
       "error": "",
-      "prefixes": 570,
+      "prefixes": 571,
       "dropped_by_normalize": 0
     },
     "ipdeny-ipv4": {
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 856 ASNs",
       "error": "",
-      "prefixes": 9548,
+      "prefixes": 9550,
       "dropped_by_normalize": 0
     }
   },
@@ -134,8 +134,8 @@
       "addresses": 11185376
     },
     "ipv6": {
-      "prefixes": 766,
-      "addresses": 327980136342453471435556141400064
+      "prefixes": 767,
+      "addresses": 328613961642567586136304493002752
     }
   }
 }
