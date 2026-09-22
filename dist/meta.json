@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-09-21T09:21:59+00:00",
-  "tag": "v2026.09.21",
+  "build_time": "2026-09-22T08:51:43+00:00",
+  "tag": "v2026.09.22",
   "changed": false,
   "sources": {
     "ripestat-country": {
@@ -8,7 +8,7 @@
       "fresh": true,
       "url": "https://stat.ripe.net/data/country-resource-list/data.json?resource=IR&v4_format=prefix&sourceapp=iran-ip-ranges-github",
       "error": "",
-      "prefixes": 2532,
+      "prefixes": 2533,
       "dropped_by_normalize": 0
     },
     "ipverse-rir-ipv4": {
@@ -118,9 +118,9 @@
     "ripestat-announced": {
       "tier": "C",
       "fresh": true,
-      "url": "RIPEstat announced-prefixes for 856 ASNs",
+      "url": "RIPEstat announced-prefixes for 857 ASNs",
       "error": "",
-      "prefixes": 9533,
+      "prefixes": 9548,
       "dropped_by_normalize": 0
     }
   },
