@@ -610,6 +610,7 @@ add address=2a10:c4c0::/29 list=IRAN
 add address=2a10:ed40::/29 list=IRAN
 add address=2a10:ef00::/29 list=IRAN
 add address=2a10:f980::/29 list=IRAN
+add address=2a10:fa80:1a::/48 list=IRAN
 add address=2a10:fa81:186b::/48 list=IRAN
 add address=2a10:fe00::/32 list=IRAN
 add address=2a11:19c0::/32 list=IRAN
