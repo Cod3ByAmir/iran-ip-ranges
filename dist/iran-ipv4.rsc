@@ -1287,6 +1287,7 @@ add address=185.96.240.0/22 list=IRAN
 add address=185.97.116.0/22 list=IRAN
 add address=185.98.112.0/22 list=IRAN
 add address=185.99.212.0/22 list=IRAN
+add address=185.99.246.0/23 list=IRAN
 add address=185.100.44.0/22 list=IRAN
 add address=185.101.39.0/24 list=IRAN
 add address=185.101.228.0/22 list=IRAN
