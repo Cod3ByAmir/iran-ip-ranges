@@ -13,7 +13,12 @@
 #   direct mode - run by hand or from cron after pbr is up. We check that the set exists and
 #                 apply "flush set" + "add element" as one atomic nft transaction.
 #
-# Logs go to syslog (tag pbr-iran, see `logread | grep pbr-iran`) and to stdout.
+# Logs go to syslog (tag pbr-iran, see `logread -e pbr-iran`) and to stdout, one line per step:
+#   pbr-iran  updating Iranian IP sets (direct mode)
+#     ✓ source   GitHub release, lists built 2026-09-11 23:05 UTC
+#     ✓ IPv4     2085 prefixes (34.1 KB, sha256 ok) loaded into pbr_wan_4_dst_ip_user
+#     – IPv6     skipped, IPv6 is disabled in pbr (pbr_wan_6_dst_ip_user not present)
+#   pbr-iran  done: IPv4 ok, IPv6 skipped, 2s
 
 IR_IFACE='wan'
 IR_TABLE='inet fw4'
@@ -26,19 +31,40 @@ IR_MIN_V4=100
 IR_MIN_V6=20
 
 IR_BASE=''
+IR_SOURCE=''
 IR_MODE='direct'
 IR_START=$(date +%s)
 
+# console colours only when stdout is a terminal; syslog and pbr output stay plain
+if [ -t 1 ]; then
+    IR_C_OK='\033[32m' IR_C_WARN='\033[33m' IR_C_ERR='\033[31m' IR_C_DIM='\033[2m' IR_C_BOLD='\033[1m' IR_C_OFF='\033[0m'
+else
+    IR_C_OK='' IR_C_WARN='' IR_C_ERR='' IR_C_DIM='' IR_C_BOLD='' IR_C_OFF=''
+fi
+
 ir_log() {
-    # $1 level (info|warn|err), $2 message
-    local prio
+    # $1 level (ok|info|skip|warn|err|head), $2 step label, $3 message
+    # console: "  ✓ IPv4     message"   syslog: "IPv4: message"
+    local prio mark colour
     case "$1" in
-        err)  prio='daemon.err' ;;
-        warn) prio='daemon.warn' ;;
-        *)    prio='daemon.info' ;;
+        ok)   prio='daemon.info';   mark='✓'; colour="$IR_C_OK" ;;
+        skip) prio='daemon.info';   mark='–'; colour="$IR_C_DIM" ;;
+        warn) prio='daemon.warn';   mark='!'; colour="$IR_C_WARN" ;;
+        err)  prio='daemon.err';    mark='✗'; colour="$IR_C_ERR" ;;
+        head) prio='daemon.notice'; mark='' ;;
+        *)    prio='daemon.info';   mark='·'; colour="$IR_C_DIM" ;;
     esac
-    logger -t pbr-iran -p "$prio" "$2" 2>/dev/null
-    echo "pbr-iran [$1]: $2"
+    if [ "$1" = 'head' ]; then
+        logger -t pbr-iran -p "$prio" "$3" 2>/dev/null
+        printf "${IR_C_BOLD}pbr-iran${IR_C_OFF}  %s\n" "$3"
+        return 0
+    fi
+    logger -t pbr-iran -p "$prio" "$2: $3" 2>/dev/null
+    printf "  ${colour}%s${IR_C_OFF} %-8s %s\n" "$mark" "$2" "$3"
+}
+
+ir_human_size() {
+    awk -v b="$1" 'BEGIN { if (b >= 1048576) printf "%.1f MB", b/1048576; else if (b >= 1024) printf "%.1f KB", b/1024; else printf "%d B", b }'
 }
 
 ir_detect_mode() {
@@ -60,25 +86,42 @@ ir_family_enabled() {
 }
 
 ir_fetch() {
-    # $1 url, $2 destination file
+    # $1 url, $2 destination file, $3 step label for the log
     if uclient-fetch -q -T "$IR_FETCH_TIMEOUT" -O "$2" "$1" 2>/dev/null && [ -s "$2" ]; then
         return 0
     fi
-    ir_log warn "fetch failed with certificate check, retrying without: $1"
-    uclient-fetch -q -T "$IR_FETCH_TIMEOUT" --no-check-certificate -O "$2" "$1" 2>/dev/null && [ -s "$2" ]
+    # retry without certificate check (e.g. router clock not set yet); warn only if that is what worked
+    if uclient-fetch -q -T "$IR_FETCH_TIMEOUT" --no-check-certificate -O "$2" "$1" 2>/dev/null && [ -s "$2" ]; then
+        ir_log warn "$3" "${1##*/} fetched without TLS verification (certificate check failed)"
+        return 0
+    fi
+    return 1
+}
+
+ir_source_name() {
+    case "$1" in
+        */releases/*) echo 'GitHub release' ;;
+        *raw.githubusercontent.com*) echo 'raw.githubusercontent.com (main branch)' ;;
+        *) echo "$1" ;;
+    esac
 }
 
 ir_pick_base() {
     # Use the first base that serves the checksum file; every other file comes from the same base.
-    local base
+    local base built
     for base in $IR_BASES; do
-        ir_log info "trying source: $base"
-        if ir_fetch "$base/sha256sums.txt" "$IR_TMP_DIR/sha256sums.txt"; then
+        if ir_fetch "$base/sha256sums.txt" "$IR_TMP_DIR/sha256sums.txt" source; then
             IR_BASE="$base"
-            ir_log info "using source: $base ($(wc -l < "$IR_TMP_DIR/sha256sums.txt") checksums)"
+            IR_SOURCE=$(ir_source_name "$base")
+            # build time is informational only; a missing or odd version.txt is not an error
+            if uclient-fetch -q -T "$IR_FETCH_TIMEOUT" -O "$IR_TMP_DIR/version.txt" "$base/version.txt" 2>/dev/null \
+                || uclient-fetch -q -T "$IR_FETCH_TIMEOUT" --no-check-certificate -O "$IR_TMP_DIR/version.txt" "$base/version.txt" 2>/dev/null; then
+                built=$(head -c 20 "$IR_TMP_DIR/version.txt" | sed 's/T/ /; s/:[0-9][0-9]Z$/ UTC/')
+            fi
+            ir_log ok source "$IR_SOURCE${built:+, lists built $built}"
             return 0
         fi
-        ir_log warn "source unavailable: $base"
+        ir_log warn source "$(ir_source_name "$base") unreachable"
     done
     return 1
 }
@@ -86,39 +129,35 @@ ir_pick_base() {
 ir_load() {
     # $1 family (4|6), $2 file name, $3 minimum element count
     local fam="$1" file="$2" min="$3"
-    local set="pbr_${IR_IFACE}_${fam}_dst_ip_user"
+    local step="IPv$fam" set="pbr_${IR_IFACE}_${fam}_dst_ip_user"
     local count size rules
 
     if ! ir_family_enabled "$fam" "$set"; then
-        ir_log info "IPv$fam: set $set not available (pbr IPv$fam disabled) - skipping"
+        ir_log skip "$step" "skipped, IPv$fam is disabled in pbr ($set not present)"
         return 2
     fi
-    ir_log info "IPv$fam: target set $IR_TABLE $set"
 
-    if ! ir_fetch "$IR_BASE/$file" "$IR_TMP_DIR/$file"; then
-        ir_log err "IPv$fam: download failed: $IR_BASE/$file"
+    if ! ir_fetch "$IR_BASE/$file" "$IR_TMP_DIR/$file" "$step"; then
+        ir_log err "$step" "download failed: $file, set left unchanged"
         return 1
     fi
-    size=$(wc -c < "$IR_TMP_DIR/$file")
-    ir_log info "IPv$fam: downloaded $file ($size bytes)"
+    size=$(ir_human_size "$(wc -c < "$IR_TMP_DIR/$file")")
 
     if ! ( cd "$IR_TMP_DIR" && grep " $file\$" sha256sums.txt | sha256sum -c -s ); then
-        ir_log err "IPv$fam: checksum mismatch for $file - not loading"
+        ir_log err "$step" "checksum mismatch for $file, set left unchanged"
         return 1
     fi
-    ir_log info "IPv$fam: checksum verified"
 
     count=$(( $(tr -cd ',' < "$IR_TMP_DIR/$file" | wc -c) + 1 ))
     if [ "$count" -lt "$min" ]; then
-        ir_log err "IPv$fam: list too short ($count entries, need at least $min) - not loading"
+        ir_log err "$step" "only $count prefixes in $file (minimum $min), set left unchanged"
         return 1
     fi
-    ir_log info "IPv$fam: $count prefixes in list"
 
     if [ "$IR_MODE" = 'pbr' ]; then
         # queue into pbr's batch; the set is created fresh in the same batch, nothing to flush
         nft "add element $IR_TABLE $set { $(cat "$IR_TMP_DIR/$file") }"
-        ir_log info "IPv$fam: queued $count prefixes for $set (pbr installs the batch)"
+        ir_log ok "$step" "$count prefixes ($size, sha256 ok) queued for $set"
         return 0
     fi
 
@@ -131,10 +170,11 @@ ir_load() {
     } > "$rules"
 
     if /usr/sbin/nft -f "$rules" 2>"$IR_TMP_DIR/nft$fam.err"; then
-        ir_log info "IPv$fam: loaded $count prefixes into $set (flushed old content first)"
+        ir_log ok "$step" "$count prefixes ($size, sha256 ok) loaded into $set"
         return 0
     fi
-    ir_log err "IPv$fam: nft rejected the element list for $set: $(head -c 300 "$IR_TMP_DIR/nft$fam.err" | tr '\n' ' ')"
+    ir_log err "$step" "nft rejected the list for $set, set left unchanged"
+    ir_log err "$step" "nft: $(head -c 300 "$IR_TMP_DIR/nft$fam.err" | tr '\n' ' ')"
     return 1
 }
 
@@ -147,18 +187,20 @@ ir_status() {
 }
 
 ir_main() {
-    local rc4 rc6 elapsed
+    local rc4 rc6 elapsed summary
 
     ir_detect_mode
-    ir_log info "run started in $IR_MODE mode (repo $IR_REPO)"
+    ir_log head '' "updating Iranian IP sets ($IR_MODE mode)"
     rm -rf "$IR_TMP_DIR"
     if ! mkdir -p "$IR_TMP_DIR"; then
-        ir_log err "cannot create $IR_TMP_DIR - aborting"
+        ir_log err setup "cannot create $IR_TMP_DIR"
+        ir_log head '' 'aborted, sets left unchanged'
         return 1
     fi
 
     if ! ir_pick_base; then
-        ir_log err "no source reachable for sha256sums.txt - sets left untouched"
+        ir_log err source "no source reachable for sha256sums.txt"
+        ir_log head '' 'aborted, sets left unchanged'
         rm -rf "$IR_TMP_DIR"
         return 1
     fi
@@ -168,13 +210,14 @@ ir_main() {
 
     rm -rf "$IR_TMP_DIR"
     elapsed=$(( $(date +%s) - IR_START ))
+    summary="IPv4 $(ir_status $rc4), IPv6 $(ir_status $rc6), ${elapsed}s"
 
     # 0 = loaded, 2 = family disabled in pbr (not an error), anything else = failure
     if [ "$rc4" -ne 1 ] && [ "$rc6" -ne 1 ]; then
-        ir_log info "run finished OK in ${elapsed}s: IPv4 $(ir_status $rc4), IPv6 $(ir_status $rc6)"
+        ir_log head '' "done: $summary"
         return 0
     fi
-    ir_log warn "run finished with problems in ${elapsed}s: IPv4 $(ir_status $rc4), IPv6 $(ir_status $rc6)"
+    ir_log head '' "finished with errors: $summary"
     return 1
 }
 
