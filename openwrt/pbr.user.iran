@@ -1,5 +1,5 @@
 #!/bin/sh
-# pbr.user.iran - load pre-built Iranian IPv4/IPv6 prefixes into the pbr user sets.
+# pbr.user.iran - load pre-built Iranian IPv4 prefixes into the pbr user set.
 #
 # All fetching, parsing, validation, de-duplication and aggregation is done daily by
 # https://github.com/Cod3ByAmir/iran-ip-ranges . This script only downloads the ready
@@ -9,16 +9,18 @@
 # Two run modes, detected automatically:
 #   pbr mode    - pbr runs this file while building /var/run/pbr.nft. There `nft` is a shell
 #                 function that queues commands into that batch, and the sets do not exist in
-#                 the kernel yet. We queue one "add element" per family; pbr installs the batch.
+#                 the kernel yet. We queue one "add element"; pbr installs the batch.
 #   direct mode - run by hand or from cron after pbr is up. We check that the set exists and
 #                 apply "flush set" + "add element" as one atomic nft transaction.
 #
+# IPv4 only: IPv6 is disabled on the router and on the WireGuard servers, so the IPv6
+# list the repo also publishes is never downloaded.
+#
 # Logs go to syslog (tag pbr-iran, see `logread -e pbr-iran`) and to stdout, one line per step:
-#   pbr-iran  updating Iranian IP sets (direct mode)
+#   pbr-iran  updating Iranian IPv4 set (direct mode)
 #     ✓ source   GitHub release, lists built 2026-09-11 23:05 UTC
 #     ✓ IPv4     2085 prefixes (34.1 KB, sha256 ok) loaded into pbr_wan_4_dst_ip_user
-#     – IPv6     skipped, IPv6 is disabled in pbr (pbr_wan_6_dst_ip_user not present)
-#   pbr-iran  done: IPv4 ok, IPv6 skipped, 2s
+#   pbr-iran  done in 2s
 
 IR_IFACE='wan'
 IR_TABLE='inet fw4'
@@ -28,7 +30,6 @@ IR_BASES="https://github.com/$IR_REPO/releases/latest/download https://raw.githu
 IR_TMP_DIR='/var/pbr-iran'
 IR_FETCH_TIMEOUT=20
 IR_MIN_V4=100
-IR_MIN_V6=20
 
 IR_BASE=''
 IR_SOURCE=''
@@ -43,12 +44,11 @@ else
 fi
 
 ir_log() {
-    # $1 level (ok|info|skip|warn|err|head), $2 step label, $3 message
+    # $1 level (ok|info|warn|err|head), $2 step label, $3 message
     # console: "  ✓ IPv4     message"   syslog: "IPv4: message"
     local prio mark colour
     case "$1" in
         ok)   prio='daemon.info';   mark='✓'; colour="$IR_C_OK" ;;
-        skip) prio='daemon.info';   mark='–'; colour="$IR_C_DIM" ;;
         warn) prio='daemon.warn';   mark='!'; colour="$IR_C_WARN" ;;
         err)  prio='daemon.err';    mark='✗'; colour="$IR_C_ERR" ;;
         head) prio='daemon.notice'; mark='' ;;
@@ -74,15 +74,10 @@ ir_detect_mode() {
     esac
 }
 
-ir_family_enabled() {
-    # $1 family (4|6), $2 set name. Returns 0 if the pbr set is expected to exist.
-    if [ "$IR_MODE" = 'pbr' ]; then
-        # sets are created later from the batch, so consult the pbr config instead
-        [ "$1" = '4' ] && return 0
-        [ "$(uci -q get pbr.config.ipv6_enabled)" = '1' ]
-        return $?
-    fi
-    /usr/sbin/nft list set $IR_TABLE "$2" >/dev/null 2>&1
+ir_set_ready() {
+    # $1 set name. In pbr mode the set is created later from the batch, so assume it is there.
+    [ "$IR_MODE" = 'pbr' ] && return 0
+    /usr/sbin/nft list set $IR_TABLE "$1" >/dev/null 2>&1
 }
 
 ir_fetch() {
@@ -127,14 +122,13 @@ ir_pick_base() {
 }
 
 ir_load() {
-    # $1 family (4|6), $2 file name, $3 minimum element count
-    local fam="$1" file="$2" min="$3"
-    local step="IPv$fam" set="pbr_${IR_IFACE}_${fam}_dst_ip_user"
+    local file='iran-ipv4.nft' min="$IR_MIN_V4"
+    local step='IPv4' set="pbr_${IR_IFACE}_4_dst_ip_user"
     local count size rules
 
-    if ! ir_family_enabled "$fam" "$set"; then
-        ir_log skip "$step" "skipped, IPv$fam is disabled in pbr ($set not present)"
-        return 2
+    if ! ir_set_ready "$set"; then
+        ir_log err "$step" "set $IR_TABLE $set not found, is pbr running with a policy for $IR_IFACE?"
+        return 1
     fi
 
     if ! ir_fetch "$IR_BASE/$file" "$IR_TMP_DIR/$file" "$step"; then
@@ -161,7 +155,7 @@ ir_load() {
         return 0
     fi
 
-    rules="$IR_TMP_DIR/rules$fam.nft"
+    rules="$IR_TMP_DIR/rules.nft"
     {
         echo "flush set $IR_TABLE $set"
         printf 'add element %s %s { ' "$IR_TABLE" "$set"
@@ -169,55 +163,42 @@ ir_load() {
         echo ' }'
     } > "$rules"
 
-    if /usr/sbin/nft -f "$rules" 2>"$IR_TMP_DIR/nft$fam.err"; then
+    if /usr/sbin/nft -f "$rules" 2>"$IR_TMP_DIR/nft.err"; then
         ir_log ok "$step" "$count prefixes ($size, sha256 ok) loaded into $set"
         return 0
     fi
     ir_log err "$step" "nft rejected the list for $set, set left unchanged"
-    ir_log err "$step" "nft: $(head -c 300 "$IR_TMP_DIR/nft$fam.err" | tr '\n' ' ')"
+    ir_log err "$step" "nft: $(head -c 300 "$IR_TMP_DIR/nft.err" | tr '\n' ' ')"
     return 1
 }
 
-ir_status() {
-    case "$1" in
-        0) echo ok ;;
-        2) echo skipped ;;
-        *) echo FAILED ;;
-    esac
-}
-
 ir_main() {
-    local rc4 rc6 elapsed summary
+    local elapsed
 
     ir_detect_mode
-    ir_log head '' "updating Iranian IP sets ($IR_MODE mode)"
+    ir_log head '' "updating Iranian IPv4 set ($IR_MODE mode)"
     rm -rf "$IR_TMP_DIR"
     if ! mkdir -p "$IR_TMP_DIR"; then
         ir_log err setup "cannot create $IR_TMP_DIR"
-        ir_log head '' 'aborted, sets left unchanged'
+        ir_log head '' 'aborted, set left unchanged'
         return 1
     fi
 
     if ! ir_pick_base; then
         ir_log err source "no source reachable for sha256sums.txt"
-        ir_log head '' 'aborted, sets left unchanged'
+        ir_log head '' 'aborted, set left unchanged'
         rm -rf "$IR_TMP_DIR"
         return 1
     fi
 
-    ir_load 4 iran-ipv4.nft "$IR_MIN_V4"; rc4=$?
-    ir_load 6 iran-ipv6.nft "$IR_MIN_V6"; rc6=$?
-
-    rm -rf "$IR_TMP_DIR"
-    elapsed=$(( $(date +%s) - IR_START ))
-    summary="IPv4 $(ir_status $rc4), IPv6 $(ir_status $rc6), ${elapsed}s"
-
-    # 0 = loaded, 2 = family disabled in pbr (not an error), anything else = failure
-    if [ "$rc4" -ne 1 ] && [ "$rc6" -ne 1 ]; then
-        ir_log head '' "done: $summary"
+    if ir_load; then
+        rm -rf "$IR_TMP_DIR"
+        elapsed=$(( $(date +%s) - IR_START ))
+        ir_log head '' "done in ${elapsed}s"
         return 0
     fi
-    ir_log head '' "finished with errors: $summary"
+    rm -rf "$IR_TMP_DIR"
+    ir_log head '' 'failed, set left unchanged'
     return 1
 }
 
