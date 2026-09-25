@@ -1,26 +1,4 @@
 #!/bin/sh
-# pbr.user.iran - load pre-built Iranian IPv4 prefixes into the pbr user set.
-#
-# All fetching, parsing, validation, de-duplication and aggregation is done daily by
-# https://github.com/Cod3ByAmir/iran-ip-ranges . This script only downloads the ready
-# made element lists, verifies their checksums and hands them to nft. It is stateless:
-# no cache, no version comparison, every call does the whole job.
-#
-# Two run modes, detected automatically:
-#   pbr mode    - pbr runs this file while building /var/run/pbr.nft. There `nft` is a shell
-#                 function that queues commands into that batch, and the sets do not exist in
-#                 the kernel yet. We queue one "add element"; pbr installs the batch.
-#   direct mode - run by hand or from cron after pbr is up. We check that the set exists and
-#                 apply "flush set" + "add element" as one atomic nft transaction.
-#
-# IPv4 only: IPv6 is disabled on the router and on the WireGuard servers, so the IPv6
-# list the repo also publishes is never downloaded.
-#
-# Logs go to syslog (tag pbr-iran, see `logread -e pbr-iran`) and to stdout, one line per step:
-#   pbr-iran  updating Iranian IPv4 set (direct mode)
-#     ✓ source   GitHub release, lists built 2026-09-11 23:05 UTC
-#     ✓ IPv4     2085 prefixes (34.1 KB, sha256 ok) loaded into pbr_wan_4_dst_ip_user
-#   pbr-iran  done in 2s
 
 IR_IFACE='wan'
 IR_TABLE='inet fw4'
@@ -36,7 +14,6 @@ IR_SOURCE=''
 IR_MODE='direct'
 IR_START=$(date +%s)
 
-# console colours only when stdout is a terminal; syslog and pbr output stay plain
 if [ -t 1 ]; then
     IR_C_OK='\033[32m' IR_C_WARN='\033[33m' IR_C_ERR='\033[31m' IR_C_DIM='\033[2m' IR_C_BOLD='\033[1m' IR_C_OFF='\033[0m'
 else
@@ -44,8 +21,6 @@ else
 fi
 
 ir_log() {
-    # $1 level (ok|info|warn|err|head), $2 step label, $3 message
-    # console: "  ✓ IPv4     message"   syslog: "IPv4: message"
     local prio mark colour
     case "$1" in
         ok)   prio='daemon.info';   mark='✓'; colour="$IR_C_OK" ;;
@@ -75,17 +50,14 @@ ir_detect_mode() {
 }
 
 ir_set_ready() {
-    # $1 set name. In pbr mode the set is created later from the batch, so assume it is there.
     [ "$IR_MODE" = 'pbr' ] && return 0
     /usr/sbin/nft list set $IR_TABLE "$1" >/dev/null 2>&1
 }
 
 ir_fetch() {
-    # $1 url, $2 destination file, $3 step label for the log
     if uclient-fetch -q -T "$IR_FETCH_TIMEOUT" -O "$2" "$1" 2>/dev/null && [ -s "$2" ]; then
         return 0
     fi
-    # retry without certificate check (e.g. router clock not set yet); warn only if that is what worked
     if uclient-fetch -q -T "$IR_FETCH_TIMEOUT" --no-check-certificate -O "$2" "$1" 2>/dev/null && [ -s "$2" ]; then
         ir_log warn "$3" "${1##*/} fetched without TLS verification (certificate check failed)"
         return 0
@@ -102,13 +74,11 @@ ir_source_name() {
 }
 
 ir_pick_base() {
-    # Use the first base that serves the checksum file; every other file comes from the same base.
     local base built
     for base in $IR_BASES; do
         if ir_fetch "$base/sha256sums.txt" "$IR_TMP_DIR/sha256sums.txt" source; then
             IR_BASE="$base"
             IR_SOURCE=$(ir_source_name "$base")
-            # build time is informational only; a missing or odd version.txt is not an error
             if uclient-fetch -q -T "$IR_FETCH_TIMEOUT" -O "$IR_TMP_DIR/version.txt" "$base/version.txt" 2>/dev/null \
                 || uclient-fetch -q -T "$IR_FETCH_TIMEOUT" --no-check-certificate -O "$IR_TMP_DIR/version.txt" "$base/version.txt" 2>/dev/null; then
                 built=$(head -c 20 "$IR_TMP_DIR/version.txt" | sed 's/T/ /; s/:[0-9][0-9]Z$/ UTC/')
@@ -149,7 +119,6 @@ ir_load() {
     fi
 
     if [ "$IR_MODE" = 'pbr' ]; then
-        # queue into pbr's batch; the set is created fresh in the same batch, nothing to flush
         nft "add element $IR_TABLE $set { $(cat "$IR_TMP_DIR/$file") }"
         ir_log ok "$step" "$count prefixes ($size, sha256 ok) queued for $set"
         return 0

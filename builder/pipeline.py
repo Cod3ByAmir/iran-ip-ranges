@@ -23,11 +23,9 @@ class SourceResult:
     url: str = ""
     error: str = ""
     raw_count: int = 0
-    nets: list = field(default_factory=list)      # normalized networks
-    dropped: int = 0                              # removed by normalize()
+    nets: list = field(default_factory=list)
+    dropped: int = 0
 
-
-# ---------------------------------------------------------------- normalize
 
 def normalize(nets) -> tuple[list, int]:
     """Canonical, globally routable, not absurdly large. Returns (kept, dropped_count)."""
@@ -50,8 +48,6 @@ def by_family(nets) -> dict:
         fam[n.version].append(n)
     return fam
 
-
-# ------------------------------------------------------------------ gather
 
 def _finish(result: SourceResult, nets, url: str) -> SourceResult:
     result.raw_count = len(nets)
@@ -80,7 +76,7 @@ def gather() -> dict[str, SourceResult]:
     for src in config.SOURCES:
         res = SourceResult(src.name, src.tier)
         if src.parser == "announced":
-            continue  # needs the ASN list, handled below
+            continue
         try:
             body, url = fetch.fetch_first(src.urls)
             if src.parser == "ripestat_country":
@@ -95,10 +91,9 @@ def gather() -> dict[str, SourceResult]:
                 raise RuntimeError("parsed zero prefixes")
             results[src.name] = _finish(res, nets, url)
             log.info("%s: %d prefixes from %s", src.name, len(res.nets), url)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             results[src.name] = _fallback(res, str(exc))
 
-    # Tier C: announced prefixes for every Iranian ASN
     src = next(s for s in config.SOURCES if s.parser == "announced")
     res = SourceResult(src.name, src.tier)
     if not asns and ASN_CACHE.is_file():
@@ -116,8 +111,6 @@ def gather() -> dict[str, SourceResult]:
             log.info("%s: %d prefixes from %d ASNs (%d failed)", src.name, len(res.nets), ok, failed)
     return results
 
-
-# ------------------------------------------------------------ Tier D clean
 
 def _covered(net, trusted_set: set) -> bool:
     for plen in range(net.prefixlen, -1, -1):
@@ -147,7 +140,6 @@ def clean_tier_d(d_nets, trusted_by_family: dict, verdicts: dict) -> tuple[list,
         if not parts:
             rejected.append({"prefix": str(net), "reason": "registry country is not IR"})
             continue
-        # report the non-IR remainder
         remainder = [net]
         for p in parts:
             nxt = []
@@ -156,14 +148,11 @@ def clean_tier_d(d_nets, trusted_by_family: dict, verdicts: dict) -> tuple[list,
             remainder = nxt
         for r in collapse(remainder):
             rejected.append({"prefix": str(r), "reason": f"non-IR part of {net}, IR parts kept"})
-    # de-duplicate identical records and give the report a stable order
     unique = {(r["prefix"], r["reason"]): r for r in rejected}
     rejected = sorted(unique.values(), key=lambda r: (ipaddress.ip_network(r["prefix"]).version,
                                                        ipaddress.ip_network(r["prefix"]), r["reason"]))
     return accepted, rejected
 
-
-# ------------------------------------------------------------------ guards
 
 def _addr_count(nets) -> int:
     return sum(n.num_addresses for n in nets)
@@ -198,8 +187,6 @@ def guard(results: dict, final: dict, force: bool) -> list[str]:
     return problems
 
 
-# ------------------------------------------------------------------ output
-
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -221,7 +208,6 @@ def write_outputs(results: dict, final: dict, rejected: list[dict], tier_d_accep
             "# Tier D (community list) entries removed by the cleaning rule\n"
             + "".join(f"{r['prefix']}\t{r['reason']}\n" for r in rej), encoding="utf-8")
 
-    # Xray / v2fly GeoIP file with a single IR entry, IPv4 only: use as ext:cgp.dat:ir
     (DIST / "cgp.dat").write_bytes(geoip.encode_geoip_list({"IR": final[4]}))
 
     (DIST / "version.txt").write_text(now.strftime("%Y-%m-%dT%H:%M:%SZ") + "\n", encoding="utf-8")
@@ -261,8 +247,6 @@ def write_outputs(results: dict, final: dict, rejected: list[dict], tier_d_accep
     (DIST / "release-notes.md").write_text("\n".join(notes), encoding="utf-8")
     return meta
 
-
-# -------------------------------------------------------------------- main
 
 def build(force: bool = False) -> int:
     results = gather()

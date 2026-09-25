@@ -37,13 +37,11 @@ def announced_prefixes(asns: list[str]) -> tuple[list, int, int]:
                     except ValueError:
                         pass
                 ok += 1
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 fail += 1
                 log.warning("AS%s: %s", asn, exc)
     return nets, ok, fail
 
-
-# ---- registry country verdicts for Tier D cleaning ----
 
 def load_verdicts() -> dict:
     if VERDICT_FILE.is_file():
@@ -79,12 +77,11 @@ def country_parts(prefix, verdicts: dict, country: str = "IR"):
                        for r in data["data"].get("located_resources", [])]
             entry = {"located": located, "checked": datetime.now(timezone.utc).isoformat(timespec="seconds")}
             verdicts[key] = entry
-            time.sleep(0.15)  # be polite to RIPEstat
-        except Exception as exc:  # noqa: BLE001
+            time.sleep(0.15)
+        except Exception as exc:
             log.warning("country lookup failed for %s: %s", key, exc)
             if entry is None:
-                return None  # unknown, retry next run
-            # stale verdict is better than nothing
+                return None
     parts = []
     for res, cc in entry["located"]:
         if cc != country:

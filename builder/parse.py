@@ -7,7 +7,6 @@ import re
 
 log = logging.getLogger("parse")
 
-# Split on anything that cannot be part of an address or prefix.
 _TOKEN_SPLIT = re.compile(r"[^0-9a-fA-F:./]+")
 _LOOKS_V4 = re.compile(r"^\d{1,3}(\.\d{1,3}){3}(/\d{1,2})?$")
 _LOOKS_V6 = re.compile(r"^[0-9a-fA-F:]*:[0-9a-fA-F:.]*(/\d{1,3})?$")
@@ -55,7 +54,7 @@ def parse_ripestat_country(body: bytes) -> tuple[list, list[str]]:
     res = data["data"]["resources"]
     nets = []
     for item in res.get("ipv4", []) + res.get("ipv6", []):
-        if "-" in item:  # range form "a-b" in case v4_format is ignored
+        if "-" in item:
             a, b = item.split("-", 1)
             nets.extend(ipaddress.summarize_address_range(ipaddress.ip_address(a), ipaddress.ip_address(b)))
         else:

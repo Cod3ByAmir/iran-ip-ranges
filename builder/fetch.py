@@ -36,7 +36,7 @@ def http_get(url: str, timeout: int = config.FETCH_TIMEOUT, retries: int = confi
         except (urllib.error.URLError, urllib.error.HTTPError, ValueError, TimeoutError, OSError) as exc:
             last = exc
             if isinstance(exc, urllib.error.HTTPError) and exc.code in (404, 410):
-                break  # a mirror that does not have the file will not grow it on retry
+                break
             log.warning("attempt %d/%d failed for %s: %s", attempt, retries, url, exc)
             time.sleep(min(2 ** attempt, 15))
     raise RuntimeError(f"fetch failed: {url}: {last}")
@@ -57,8 +57,6 @@ def fetch_first(urls: list[str]) -> tuple[bytes, str]:
             errors.append(str(exc))
     raise RuntimeError("; ".join(errors))
 
-
-# ---- committed cache of the *parsed* prefix list per source ----
 
 def cache_path(name: str) -> Path:
     return CACHE_DIR / f"{name}.txt"
