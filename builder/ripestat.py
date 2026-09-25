@@ -1,10 +1,9 @@
-"""RIPEstat helpers: announced prefixes per ASN and registry-country verdicts."""
 import ipaddress
 import json
 import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from . import config
@@ -15,12 +14,13 @@ VERDICT_FILE = Path("state/verdicts.json")
 
 
 def announced_prefixes(asns: list[str]) -> tuple[list, int, int]:
-    """Return (networks, ok_count, fail_count) for the announced prefixes of all ASNs."""
     nets, ok, fail = [], 0, 0
 
     def one(asn: str):
-        url = (f"https://stat.ripe.net/data/announced-prefixes/data.json"
-               f"?resource=AS{asn}&sourceapp={config.RIPESTAT_APP}")
+        url = (
+            f"https://stat.ripe.net/data/announced-prefixes/data.json"
+            f"?resource=AS{asn}&sourceapp={config.RIPESTAT_APP}"
+        )
         data = http_get_json(url, timeout=45)
         if data.get("status") != "ok":
             raise RuntimeError(f"status {data.get('status')}")
@@ -60,22 +60,25 @@ def _stale(entry: dict) -> bool:
 
 
 def country_parts(prefix, verdicts: dict, country: str = "IR"):
-    """Return the sub-parts of `prefix` whose registry country is `country`, or None on lookup failure.
-
-    Verdicts are cached as {"located": [[prefix, cc], ...], "checked": iso}.
-    """
     key = str(prefix)
     entry = verdicts.get(key)
     if entry is None or _stale(entry):
-        url = (f"https://stat.ripe.net/data/rir-stats-country/data.json"
-               f"?resource={key}&sourceapp={config.RIPESTAT_APP}")
+        url = (
+            f"https://stat.ripe.net/data/rir-stats-country/data.json"
+            f"?resource={key}&sourceapp={config.RIPESTAT_APP}"
+        )
         try:
             data = http_get_json(url, timeout=45)
             if data.get("status") != "ok":
                 raise RuntimeError(f"status {data.get('status')}")
-            located = [[r["resource"], (r.get("location") or "").upper()]
-                       for r in data["data"].get("located_resources", [])]
-            entry = {"located": located, "checked": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+            located = [
+                [r["resource"], (r.get("location") or "").upper()]
+                for r in data["data"].get("located_resources", [])
+            ]
+            entry = {
+                "located": located,
+                "checked": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            }
             verdicts[key] = entry
             time.sleep(0.15)
         except Exception as exc:

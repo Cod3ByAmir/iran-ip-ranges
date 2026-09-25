@@ -1,4 +1,3 @@
-"""The build pipeline: gather -> normalize -> clean Tier D -> aggregate -> guard -> write."""
 import hashlib
 import ipaddress
 import json
@@ -28,7 +27,6 @@ class SourceResult:
 
 
 def normalize(nets) -> tuple[list, int]:
-    """Canonical, globally routable, not absurdly large. Returns (kept, dropped_count)."""
     kept, dropped = [], 0
     for net in nets:
         if not net.is_global or net.prefixlen < config.MIN_PREFIXLEN[net.version]:
@@ -82,7 +80,9 @@ def gather() -> dict[str, SourceResult]:
             if src.parser == "ripestat_country":
                 nets, asns = parse.parse_ripestat_country(body)
                 ASN_CACHE.parent.mkdir(exist_ok=True)
-                ASN_CACHE.write_text("".join(f"{a}\n" for a in sorted(asns, key=int)), encoding="utf-8")
+                ASN_CACHE.write_text(
+                    "".join(f"{a}\n" for a in sorted(asns, key=int)), encoding="utf-8"
+                )
             elif src.parser == "dbip_csv":
                 nets = parse.parse_dbip_csv(body)
             else:
@@ -108,7 +108,9 @@ def gather() -> dict[str, SourceResult]:
         else:
             results[src.name] = _finish(res, nets, f"RIPEstat announced-prefixes for {ok} ASNs")
             res.error = f"{failed} ASN lookups failed" if failed else ""
-            log.info("%s: %d prefixes from %d ASNs (%d failed)", src.name, len(res.nets), ok, failed)
+            log.info(
+                "%s: %d prefixes from %d ASNs (%d failed)", src.name, len(res.nets), ok, failed
+            )
     return results
 
 
@@ -120,7 +122,6 @@ def _covered(net, trusted_set: set) -> bool:
 
 
 def clean_tier_d(d_nets, trusted_by_family: dict, verdicts: dict) -> tuple[list, list[dict]]:
-    """Return (accepted networks, rejection records)."""
     trusted_set = {n for fam in trusted_by_family.values() for n in fam}
     accepted, rejected = [], []
     seen = set()
@@ -133,7 +134,9 @@ def clean_tier_d(d_nets, trusted_by_family: dict, verdicts: dict) -> tuple[list,
             continue
         parts = ripestat.country_parts(net, verdicts)
         if parts is None:
-            rejected.append({"prefix": str(net), "reason": "registry lookup failed, will retry next build"})
+            rejected.append(
+                {"prefix": str(net), "reason": "registry lookup failed, will retry next build"}
+            )
             continue
         parts = collapse(parts)
         accepted.extend(parts)
@@ -149,8 +152,14 @@ def clean_tier_d(d_nets, trusted_by_family: dict, verdicts: dict) -> tuple[list,
         for r in collapse(remainder):
             rejected.append({"prefix": str(r), "reason": f"non-IR part of {net}, IR parts kept"})
     unique = {(r["prefix"], r["reason"]): r for r in rejected}
-    rejected = sorted(unique.values(), key=lambda r: (ipaddress.ip_network(r["prefix"]).version,
-                                                       ipaddress.ip_network(r["prefix"]), r["reason"]))
+    rejected = sorted(
+        unique.values(),
+        key=lambda r: (
+            ipaddress.ip_network(r["prefix"]).version,
+            ipaddress.ip_network(r["prefix"]),
+            r["reason"],
+        ),
+    )
     return accepted, rejected
 
 
@@ -172,15 +181,21 @@ def guard(results: dict, final: dict, force: bool) -> list[str]:
         problems.append(f"only {fresh_a} fresh Tier A sources (need {config.MIN_TIER_A_FRESH})")
     for fam in (4, 6):
         if len(final[fam]) < config.MIN_OUTPUT[fam]:
-            problems.append(f"IPv{fam} output has {len(final[fam])} prefixes (min {config.MIN_OUTPUT[fam]})")
+            problems.append(
+                f"IPv{fam} output has {len(final[fam])} prefixes (min {config.MIN_OUTPUT[fam]})"
+            )
         prev = _previous(fam)
         if not prev:
             continue
-        for label, new, old in ((f"v{fam}_prefixes", len(final[fam]), len(prev)),
-                                (f"v{fam}_addresses", _addr_count(final[fam]), _addr_count(prev))):
+        for label, new, old in (
+            (f"v{fam}_prefixes", len(final[fam]), len(prev)),
+            (f"v{fam}_addresses", _addr_count(final[fam]), _addr_count(prev)),
+        ):
             ratio = abs(new - old) / max(1, old)
             if ratio > config.MAX_CHANGE_RATIO[label]:
-                problems.append(f"{label} moved {ratio:.1%} ({old} -> {new}), limit {config.MAX_CHANGE_RATIO[label]:.0%}")
+                problems.append(
+                    f"{label} moved {ratio:.1%} ({old} -> {new}), limit {config.MAX_CHANGE_RATIO[label]:.0%}"
+                )
     if problems and force:
         log.warning("guards overridden by --force: %s", "; ".join(problems))
         return []
@@ -191,7 +206,9 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def write_outputs(results: dict, final: dict, rejected: list[dict], tier_d_accepted: int, changed: bool) -> dict:
+def write_outputs(
+    results: dict, final: dict, rejected: list[dict], tier_d_accepted: int, changed: bool
+) -> dict:
     DIST.mkdir(exist_ok=True)
     now = datetime.now(timezone.utc)
     tag = now.strftime("v%Y.%m.%d")
@@ -202,11 +219,14 @@ def write_outputs(results: dict, final: dict, rejected: list[dict], tier_d_accep
         (DIST / f"iran-ipv{fam}.nft").write_text(", ".join(map(str, nets)) + "\n", encoding="utf-8")
         table = "/ip firewall address-list" if fam == 4 else "/ipv6 firewall address-list"
         (DIST / f"iran-ipv{fam}.rsc").write_text(
-            table + "\n" + "".join(f"add address={n} list=IRAN\n" for n in nets), encoding="utf-8")
+            table + "\n" + "".join(f"add address={n} list=IRAN\n" for n in nets), encoding="utf-8"
+        )
         rej = [r for r in rejected if ipaddress.ip_network(r["prefix"]).version == fam]
         (DIST / f"rejected-ipv{fam}.txt").write_text(
             "# Tier D (community list) entries removed by the cleaning rule\n"
-            + "".join(f"{r['prefix']}\t{r['reason']}\n" for r in rej), encoding="utf-8")
+            + "".join(f"{r['prefix']}\t{r['reason']}\n" for r in rej),
+            encoding="utf-8",
+        )
 
     (DIST / "cgp.dat").write_bytes(geoip.encode_geoip_list({"IR": final[4]}))
 
@@ -217,13 +237,21 @@ def write_outputs(results: dict, final: dict, rejected: list[dict], tier_d_accep
         "tag": tag,
         "changed": changed,
         "sources": {
-            name: {"tier": r.tier, "fresh": r.fresh, "url": r.url, "error": r.error,
-                   "prefixes": len(r.nets), "dropped_by_normalize": r.dropped}
+            name: {
+                "tier": r.tier,
+                "fresh": r.fresh,
+                "url": r.url,
+                "error": r.error,
+                "prefixes": len(r.nets),
+                "dropped_by_normalize": r.dropped,
+            }
             for name, r in results.items()
         },
         "tier_d": {"accepted_prefixes": tier_d_accepted, "rejected_records": len(rejected)},
-        "output": {f"ipv{fam}": {"prefixes": len(final[fam]), "addresses": _addr_count(final[fam])}
-                   for fam in (4, 6)},
+        "output": {
+            f"ipv{fam}": {"prefixes": len(final[fam]), "addresses": _addr_count(final[fam])}
+            for fam in (4, 6)
+        },
     }
     (DIST / "meta.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
 
@@ -234,16 +262,28 @@ def write_outputs(results: dict, final: dict, rejected: list[dict], tier_d_accep
         sums.append(f"{_sha256(path)}  {path.name}\n")
     (DIST / "sha256sums.txt").write_text("".join(sums), encoding="utf-8")
 
-    notes = [f"# Iran IP ranges {tag}", "", f"Built {meta['build_time']}.", "",
-             "| Family | Prefixes | Addresses |", "|---|---|---|"]
+    notes = [
+        f"# Iran IP ranges {tag}",
+        "",
+        f"Built {meta['build_time']}.",
+        "",
+        "| Family | Prefixes | Addresses |",
+        "|---|---|---|",
+    ]
     for fam in (4, 6):
         o = meta["output"][f"ipv{fam}"]
         notes.append(f"| IPv{fam} | {o['prefixes']} | {o['addresses']:,} |")
     notes += ["", "| Source | Tier | Fresh | Prefixes |", "|---|---|---|---|"]
     for name, s in meta["sources"].items():
-        notes.append(f"| {name} | {s['tier']} | {'yes' if s['fresh'] else 'cached'} | {s['prefixes']} |")
-    notes += ["", f"Tier D cleaning: {tier_d_accepted} prefixes accepted, {len(rejected)} rejection records "
-              "(see rejected-ipv4.txt / rejected-ipv6.txt).", ""]
+        notes.append(
+            f"| {name} | {s['tier']} | {'yes' if s['fresh'] else 'cached'} | {s['prefixes']} |"
+        )
+    notes += [
+        "",
+        f"Tier D cleaning: {tier_d_accepted} prefixes accepted, {len(rejected)} rejection records "
+        "(see rejected-ipv4.txt / rejected-ipv6.txt).",
+        "",
+    ]
     (DIST / "release-notes.md").write_text("\n".join(notes), encoding="utf-8")
     return meta
 
@@ -258,7 +298,12 @@ def build(force: bool = False) -> int:
     verdicts = ripestat.load_verdicts()
     accepted_d, rejected = clean_tier_d(d_nets, trusted, verdicts)
     ripestat.save_verdicts(verdicts)
-    log.info("Tier D: %d input, %d accepted, %d rejection records", len(d_nets), len(accepted_d), len(rejected))
+    log.info(
+        "Tier D: %d input, %d accepted, %d rejection records",
+        len(d_nets),
+        len(accepted_d),
+        len(rejected),
+    )
 
     final = {}
     for fam in (4, 6):

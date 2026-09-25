@@ -1,15 +1,3 @@
-"""Write a v2fly/Xray compatible geoip.dat containing only the given entries.
-
-Wire format (protobuf, hand encoded so the build stays dependency free):
-
-    message CIDR      { bytes ip = 1; uint32 prefix = 2; }
-    message GeoIP     { string country_code = 1; repeated CIDR cidr = 2; bool reverse_match = 3; }
-    message GeoIPList { repeated GeoIP entry = 1; }
-
-Use the result as `ext:cgp.dat:ir` in an Xray routing rule.
-"""
-
-
 def _varint(n: int) -> bytes:
     out = bytearray()
     while True:
@@ -31,7 +19,6 @@ def _uint_field(num: int, value: int) -> bytes:
 
 
 def encode_geoip_list(entries: dict) -> bytes:
-    """entries: {country_code: iterable of ip_network}. Codes are stored upper-case."""
     out = bytearray()
     for code, nets in entries.items():
         entry = bytearray(_len_field(1, code.upper().encode("ascii")))

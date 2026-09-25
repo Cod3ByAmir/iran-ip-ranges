@@ -1,4 +1,3 @@
-"""HTTP fetching with retries, mirrors and a committed per-source cache."""
 import gzip
 import json
 import logging
@@ -20,8 +19,9 @@ def _expand(url: str) -> str:
     return url.format(ym=today.strftime("%Y-%m"), ym_prev=prev.strftime("%Y-%m"))
 
 
-def http_get(url: str, timeout: int = config.FETCH_TIMEOUT, retries: int = config.FETCH_RETRIES) -> bytes:
-    """GET a URL, following redirects, transparently un-gzipping. Raises on final failure."""
+def http_get(
+    url: str, timeout: int = config.FETCH_TIMEOUT, retries: int = config.FETCH_RETRIES
+) -> bytes:
     last = None
     for attempt in range(1, retries + 1):
         try:
@@ -33,12 +33,18 @@ def http_get(url: str, timeout: int = config.FETCH_TIMEOUT, retries: int = confi
             if not data.strip():
                 raise ValueError("empty response body")
             return data
-        except (urllib.error.URLError, urllib.error.HTTPError, ValueError, TimeoutError, OSError) as exc:
+        except (
+            urllib.error.URLError,
+            urllib.error.HTTPError,
+            ValueError,
+            TimeoutError,
+            OSError,
+        ) as exc:
             last = exc
             if isinstance(exc, urllib.error.HTTPError) and exc.code in (404, 410):
                 break
             log.warning("attempt %d/%d failed for %s: %s", attempt, retries, url, exc)
-            time.sleep(min(2 ** attempt, 15))
+            time.sleep(min(2**attempt, 15))
     raise RuntimeError(f"fetch failed: {url}: {last}")
 
 
@@ -47,7 +53,6 @@ def http_get_json(url: str, **kw) -> dict:
 
 
 def fetch_first(urls: list[str]) -> tuple[bytes, str]:
-    """Try each mirror in order; return (body, url_used)."""
     errors = []
     for raw_url in urls:
         url = _expand(raw_url)
