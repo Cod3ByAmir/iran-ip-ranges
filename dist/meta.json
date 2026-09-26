@@ -1,7 +1,7 @@
 {
-  "build_time": "2026-09-25T09:10:00+00:00",
-  "tag": "v2026.09.25",
-  "changed": true,
+  "build_time": "2026-09-26T08:52:57+00:00",
+  "tag": "v2026.09.26",
+  "changed": false,
   "sources": {
     "ripestat-country": {
       "tier": "A",
@@ -32,7 +32,7 @@
       "fresh": true,
       "url": "https://www.ipdeny.com/ipblocks/data/countries/ir.zone",
       "error": "",
-      "prefixes": 1964,
+      "prefixes": 1966,
       "dropped_by_normalize": 0
     },
     "ipdeny-ipv6": {
@@ -112,7 +112,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/farshidmousavii/iran-ip-ranges/main/dist/raw/ipv4.txt",
       "error": "",
-      "prefixes": 1806,
+      "prefixes": 1807,
       "dropped_by_normalize": 0
     },
     "ripestat-announced": {
@@ -120,12 +120,12 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 858 ASNs",
       "error": "",
-      "prefixes": 9616,
+      "prefixes": 9611,
       "dropped_by_normalize": 0
     }
   },
   "tier_d": {
-    "accepted_prefixes": 2099,
+    "accepted_prefixes": 2100,
     "rejected_records": 320
   },
   "output": {
