@@ -1,7 +1,6 @@
 # Tier D (community list) entries removed by the cleaning rule
 5.22.204.0/22	non-IR part of 5.22.192.0/19, IR parts kept
 5.22.208.0/20	non-IR part of 5.22.192.0/19, IR parts kept
-5.28.192.0/19	registry country is not IR
 5.34.208.0/20	non-IR part of 5.34.192.0/19, IR parts kept
 5.75.128.0/17	non-IR part of 5.72.0.0/14, IR parts kept
 5.75.128.0/17	registry country is not IR

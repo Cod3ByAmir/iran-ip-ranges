@@ -8,6 +8,7 @@ add address=5.22.0.0/17 list=IRAN
 add address=5.22.192.0/21 list=IRAN
 add address=5.22.200.0/22 list=IRAN
 add address=5.23.112.0/21 list=IRAN
+add address=5.28.192.0/18 list=IRAN
 add address=5.34.192.0/20 list=IRAN
 add address=5.42.217.0/24 list=IRAN
 add address=5.42.223.0/24 list=IRAN
