@@ -2023,7 +2023,6 @@ add address=196.58.103.0/24 list=IRAN
 add address=196.197.103.0/24 list=IRAN
 add address=196.198.103.0/24 list=IRAN
 add address=196.199.103.0/24 list=IRAN
-add address=201.7.23.0/24 list=IRAN
 add address=204.18.0.0/16 list=IRAN
 add address=204.245.22.28/30 list=IRAN
 add address=204.245.22.32/27 list=IRAN
