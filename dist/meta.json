@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-09-30T10:03:26+00:00",
-  "tag": "v2026.09.30",
+  "build_time": "2026-10-01T10:32:07+00:00",
+  "tag": "v2026.10.01",
   "changed": true,
   "sources": {
     "ripestat-country": {
@@ -8,7 +8,7 @@
       "fresh": true,
       "url": "https://stat.ripe.net/data/country-resource-list/data.json?resource=IR&v4_format=prefix&sourceapp=iran-ip-ranges-github",
       "error": "",
-      "prefixes": 2542,
+      "prefixes": 2543,
       "dropped_by_normalize": 0
     },
     "ipverse-rir-ipv4": {
@@ -16,7 +16,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/ipverse/rir-ip/master/country/ir/ipv4-aggregated.txt",
       "error": "",
-      "prefixes": 1745,
+      "prefixes": 1746,
       "dropped_by_normalize": 0
     },
     "ipverse-rir-ipv6": {
@@ -32,7 +32,7 @@
       "fresh": true,
       "url": "https://www.ipdeny.com/ipblocks/data/countries/ir.zone",
       "error": "",
-      "prefixes": 1966,
+      "prefixes": 1971,
       "dropped_by_normalize": 0
     },
     "ipdeny-ipv6": {
@@ -48,7 +48,7 @@
       "fresh": true,
       "url": "https://www.iwik.org/ipcountry/IR.cidr",
       "error": "",
-      "prefixes": 2065,
+      "prefixes": 2067,
       "dropped_by_normalize": 0
     },
     "firehol-geolite2": {
@@ -70,9 +70,9 @@
     "dbip-country-lite": {
       "tier": "B",
       "fresh": true,
-      "url": "https://download.db-ip.com/free/dbip-country-lite-2026-09.csv.gz",
+      "url": "https://download.db-ip.com/free/dbip-country-lite-2026-10.csv.gz",
       "error": "",
-      "prefixes": 3064,
+      "prefixes": 3038,
       "dropped_by_normalize": 0
     },
     "loyalsoldier-geoip": {
@@ -112,7 +112,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/farshidmousavii/iran-ip-ranges/main/dist/raw/ipv4.txt",
       "error": "",
-      "prefixes": 1807,
+      "prefixes": 1808,
       "dropped_by_normalize": 0
     },
     "ripestat-announced": {
@@ -120,22 +120,22 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 858 ASNs",
       "error": "",
-      "prefixes": 9595,
+      "prefixes": 9587,
       "dropped_by_normalize": 0
     }
   },
   "tier_d": {
     "accepted_prefixes": 2101,
-    "rejected_records": 319
+    "rejected_records": 320
   },
   "output": {
     "ipv4": {
-      "prefixes": 2107,
-      "addresses": 11203041
+      "prefixes": 2108,
+      "addresses": 11185855
     },
     "ipv6": {
-      "prefixes": 768,
-      "addresses": 328613962851493405750933667708928
+      "prefixes": 761,
+      "addresses": 328613029560760663257210794541056
     }
   }
 }

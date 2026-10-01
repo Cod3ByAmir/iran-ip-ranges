@@ -46,13 +46,7 @@ add address=2001:790::/32 list=IRAN
 add address=2001:7f8:a8::/48 list=IRAN
 add address=2001:14e8::/32 list=IRAN
 add address=2001:1500::/32 list=IRAN
-add address=2001:16c0:1::/48 list=IRAN
-add address=2001:16c0:6::/47 list=IRAN
-add address=2001:16c0:8::/47 list=IRAN
 add address=2001:16c0:a::/48 list=IRAN
-add address=2001:16c0:51::/48 list=IRAN
-add address=2001:16c0:52::/47 list=IRAN
-add address=2001:16c0:1235::/48 list=IRAN
 add address=2001:3040::/29 list=IRAN
 add address=2001:30c0::/29 list=IRAN
 add address=2001:3786:5006:500::/56 list=IRAN
@@ -78,6 +72,7 @@ add address=2402:8740::/32 list=IRAN
 add address=2600:70ff:a6de::/48 list=IRAN
 add address=2600:70ff:a88b::/48 list=IRAN
 add address=2600:70ff:d0b6::/48 list=IRAN
+add address=2602:814:fdac::/46 list=IRAN
 add address=2606:54c0:4130::/44 list=IRAN
 add address=2606:54c0:4140::/45 list=IRAN
 add address=2606:54c3:0:7c6::/64 list=IRAN
@@ -205,10 +200,7 @@ add address=2a04:1380::/29 list=IRAN
 add address=2a04:1400::/29 list=IRAN
 add address=2a04:1900::/29 list=IRAN
 add address=2a04:1d42:6100::/40 list=IRAN
-add address=2a04:1d43:6100::/40 list=IRAN
-add address=2a04:1d44:6100::/40 list=IRAN
 add address=2a04:1d45:6100::/40 list=IRAN
-add address=2a04:1d47:6100::/40 list=IRAN
 add address=2a04:2680::/29 list=IRAN
 add address=2a04:2d40::/29 list=IRAN
 add address=2a04:2d80::/29 list=IRAN
@@ -516,6 +508,7 @@ add address=2a0d:1540::/29 list=IRAN
 add address=2a0d:2380::/29 list=IRAN
 add address=2a0d:2440::/30 list=IRAN
 add address=2a0d:2681:1000::/40 list=IRAN
+add address=2a0d:2684:6c::/48 list=IRAN
 add address=2a0d:2880::/29 list=IRAN
 add address=2a0d:3ec0::/29 list=IRAN
 add address=2a0d:4680::/29 list=IRAN
