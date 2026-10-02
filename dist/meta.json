@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-10-01T10:32:07+00:00",
-  "tag": "v2026.10.01",
+  "build_time": "2026-10-02T10:06:36+00:00",
+  "tag": "v2026.10.02",
   "changed": true,
   "sources": {
     "ripestat-country": {
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 858 ASNs",
       "error": "",
-      "prefixes": 9587,
+      "prefixes": 9567,
       "dropped_by_normalize": 0
     }
   },
@@ -130,8 +130,8 @@
   },
   "output": {
     "ipv4": {
-      "prefixes": 2108,
-      "addresses": 11185855
+      "prefixes": 2107,
+      "addresses": 11184831
     },
     "ipv6": {
       "prefixes": 761,

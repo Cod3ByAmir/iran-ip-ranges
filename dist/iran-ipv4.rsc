@@ -91,7 +91,6 @@ add address=31.58.164.0/24 list=IRAN
 add address=31.58.215.0/24 list=IRAN
 add address=31.58.237.0/24 list=IRAN
 add address=31.58.249.0/24 list=IRAN
-add address=31.58.252.0/22 list=IRAN
 add address=31.59.88.0/24 list=IRAN
 add address=31.59.126.0/24 list=IRAN
 add address=31.59.161.0/24 list=IRAN
