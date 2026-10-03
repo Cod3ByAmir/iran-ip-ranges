@@ -1,10 +1,10 @@
-# Iran IP ranges v2026.10.02
+# Iran IP ranges v2026.10.03
 
-Built 2026-10-02T10:06:36+00:00.
+Built 2026-10-03T09:28:55+00:00.
 
 | Family | Prefixes | Addresses |
 |---|---|---|
-| IPv4 | 2107 | 11,184,831 |
+| IPv4 | 2100 | 11,182,527 |
 | IPv6 | 761 | 328,613,029,560,760,663,257,210,794,541,056 |
 
 | Source | Tier | Fresh | Prefixes |
@@ -16,13 +16,13 @@ Built 2026-10-02T10:06:36+00:00.
 | ipdeny-ipv6 | A | yes | 571 |
 | iwik-geolite2 | B | yes | 2067 |
 | firehol-geolite2 | B | yes | 1874 |
-| firehol-ip2location | B | yes | 2021 |
+| firehol-ip2location | B | yes | 2024 |
 | dbip-country-lite | B | yes | 3038 |
 | loyalsoldier-geoip | B | yes | 2776 |
 | arastu | D | yes | 1525 |
 | ramtiiin | D | yes | 1387 |
 | arvancloud | D | yes | 14 |
 | farshidmousavii | D | yes | 1808 |
-| ripestat-announced | C | yes | 9567 |
+| ripestat-announced | C | yes | 9569 |
 
 Tier D cleaning: 2101 prefixes accepted, 320 rejection records (see rejected-ipv4.txt / rejected-ipv6.txt).
