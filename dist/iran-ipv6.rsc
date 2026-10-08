@@ -75,6 +75,9 @@ add address=2600:70ff:d0b6::/48 list=IRAN
 add address=2602:814:fdac::/46 list=IRAN
 add address=2606:54c0:4130::/44 list=IRAN
 add address=2606:54c0:4140::/45 list=IRAN
+add address=2606:54c1:1:5d::/64 list=IRAN
+add address=2606:54c1:1:2f2::/64 list=IRAN
+add address=2606:54c1:1:6f3::/64 list=IRAN
 add address=2606:54c3:0:7c6::/64 list=IRAN
 add address=2606:54c3:0:1754::/64 list=IRAN
 add address=2606:54c3:0:1847::/64 list=IRAN
