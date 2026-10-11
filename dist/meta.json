@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-10-10T10:10:46+00:00",
-  "tag": "v2026.10.10",
+  "build_time": "2026-10-11T10:25:59+00:00",
+  "tag": "v2026.10.11",
   "changed": false,
   "sources": {
     "ripestat-country": {
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 859 ASNs",
       "error": "",
-      "prefixes": 9366,
+      "prefixes": 9328,
       "dropped_by_normalize": 0
     }
   },
