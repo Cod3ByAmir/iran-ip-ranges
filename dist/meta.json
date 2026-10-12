@@ -1,7 +1,7 @@
 {
-  "build_time": "2026-10-11T10:25:59+00:00",
-  "tag": "v2026.10.11",
-  "changed": false,
+  "build_time": "2026-10-12T11:25:34+00:00",
+  "tag": "v2026.10.12",
+  "changed": true,
   "sources": {
     "ripestat-country": {
       "tier": "A",
@@ -112,7 +112,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/farshidmousavii/iran-ip-ranges/main/dist/raw/ipv4.txt",
       "error": "",
-      "prefixes": 1807,
+      "prefixes": 1805,
       "dropped_by_normalize": 0
     },
     "ripestat-announced": {
@@ -120,18 +120,18 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 859 ASNs",
       "error": "",
-      "prefixes": 9328,
+      "prefixes": 9325,
       "dropped_by_normalize": 0
     }
   },
   "tier_d": {
-    "accepted_prefixes": 2100,
+    "accepted_prefixes": 2098,
     "rejected_records": 320
   },
   "output": {
     "ipv4": {
-      "prefixes": 2104,
-      "addresses": 11182535
+      "prefixes": 2102,
+      "addresses": 11182023
     },
     "ipv6": {
       "prefixes": 764,
