@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-10-12T11:25:34+00:00",
-  "tag": "v2026.10.12",
+  "build_time": "2026-10-13T11:14:28+00:00",
+  "tag": "v2026.10.13",
   "changed": true,
   "sources": {
     "ripestat-country": {
@@ -8,7 +8,7 @@
       "fresh": true,
       "url": "https://stat.ripe.net/data/country-resource-list/data.json?resource=IR&v4_format=prefix&sourceapp=iran-ip-ranges-github",
       "error": "",
-      "prefixes": 2544,
+      "prefixes": 2545,
       "dropped_by_normalize": 0
     },
     "ipverse-rir-ipv4": {
@@ -24,7 +24,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/ipverse/rir-ip/master/country/ir/ipv6-aggregated.txt",
       "error": "",
-      "prefixes": 571,
+      "prefixes": 572,
       "dropped_by_normalize": 0
     },
     "ipdeny-ipv4": {
@@ -40,7 +40,7 @@
       "fresh": true,
       "url": "https://www.ipdeny.com/ipv6/ipaddresses/aggregated/ir-aggregated.zone",
       "error": "",
-      "prefixes": 571,
+      "prefixes": 572,
       "dropped_by_normalize": 0
     },
     "iwik-geolite2": {
@@ -112,30 +112,30 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/farshidmousavii/iran-ip-ranges/main/dist/raw/ipv4.txt",
       "error": "",
-      "prefixes": 1805,
+      "prefixes": 1806,
       "dropped_by_normalize": 0
     },
     "ripestat-announced": {
       "tier": "C",
       "fresh": true,
-      "url": "RIPEstat announced-prefixes for 859 ASNs",
+      "url": "RIPEstat announced-prefixes for 858 ASNs",
       "error": "",
-      "prefixes": 9325,
+      "prefixes": 9333,
       "dropped_by_normalize": 0
     }
   },
   "tier_d": {
-    "accepted_prefixes": 2098,
+    "accepted_prefixes": 2099,
     "rejected_records": 320
   },
   "output": {
     "ipv4": {
-      "prefixes": 2102,
-      "addresses": 11182023
+      "prefixes": 2103,
+      "addresses": 11182279
     },
     "ipv6": {
-      "prefixes": 764,
-      "addresses": 328613029560816003489431923195904
+      "prefixes": 765,
+      "addresses": 329246854860930118190180274798592
     }
   }
 }
