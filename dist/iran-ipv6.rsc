@@ -66,7 +66,6 @@ add address=2001:4860:7:1714::/64 list=IRAN
 add address=2001:4b28:6100::/40 list=IRAN
 add address=2001:4c88::/32 list=IRAN
 add address=2401:b60:1690::/44 list=IRAN
-add address=2401:3620:231:74::/64 list=IRAN
 add address=2401:eec0::/32 list=IRAN
 add address=2402:8740::/32 list=IRAN
 add address=2600:70ff:a6de::/48 list=IRAN

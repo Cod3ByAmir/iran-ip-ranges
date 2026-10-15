@@ -1,7 +1,7 @@
 {
-  "build_time": "2026-10-14T09:05:36+00:00",
-  "tag": "v2026.10.14",
-  "changed": false,
+  "build_time": "2026-10-15T08:39:41+00:00",
+  "tag": "v2026.10.15",
+  "changed": true,
   "sources": {
     "ripestat-country": {
       "tier": "A",
@@ -48,7 +48,7 @@
       "fresh": true,
       "url": "https://www.iwik.org/ipcountry/IR.cidr",
       "error": "",
-      "prefixes": 2063,
+      "prefixes": 2070,
       "dropped_by_normalize": 0
     },
     "firehol-geolite2": {
@@ -80,7 +80,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/ir.txt",
       "error": "",
-      "prefixes": 2786,
+      "prefixes": 2781,
       "dropped_by_normalize": 0
     },
     "arastu": {
@@ -112,30 +112,30 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/farshidmousavii/iran-ip-ranges/main/dist/raw/ipv4.txt",
       "error": "",
-      "prefixes": 1806,
+      "prefixes": 1805,
       "dropped_by_normalize": 0
     },
     "ripestat-announced": {
       "tier": "C",
       "fresh": true,
-      "url": "RIPEstat announced-prefixes for 858 ASNs",
+      "url": "RIPEstat announced-prefixes for 859 ASNs",
       "error": "",
-      "prefixes": 9340,
+      "prefixes": 9339,
       "dropped_by_normalize": 0
     }
   },
   "tier_d": {
-    "accepted_prefixes": 2099,
+    "accepted_prefixes": 2098,
     "rejected_records": 320
   },
   "output": {
     "ipv4": {
-      "prefixes": 2103,
-      "addresses": 11182279
+      "prefixes": 2102,
+      "addresses": 11182023
     },
     "ipv6": {
-      "prefixes": 765,
-      "addresses": 329246854860930118190180274798592
+      "prefixes": 764,
+      "addresses": 329246854860911671446106565246976
     }
   }
 }
