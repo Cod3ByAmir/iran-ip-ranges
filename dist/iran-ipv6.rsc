@@ -609,7 +609,9 @@ add address=2a10:f980::/29 list=IRAN
 add address=2a10:fa80:1a::/48 list=IRAN
 add address=2a10:fa81:186b::/48 list=IRAN
 add address=2a10:fe00::/32 list=IRAN
+add address=2a11:900::/29 list=IRAN
 add address=2a11:19c0::/32 list=IRAN
+add address=2a11:4e00::/29 list=IRAN
 add address=2a11:6e80::/29 list=IRAN
 add address=2a11:7700::/29 list=IRAN
 add address=2a11:7bc0::/29 list=IRAN
