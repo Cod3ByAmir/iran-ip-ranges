@@ -464,6 +464,7 @@ add address=2a0b:3000::/29 list=IRAN
 add address=2a0b:3cc0::/29 list=IRAN
 add address=2a0b:4a00::/29 list=IRAN
 add address=2a0b:4e07:3:3640::/60 list=IRAN
+add address=2a0b:5047:2141::/48 list=IRAN
 add address=2a0b:5a00::/29 list=IRAN
 add address=2a0b:6b00::/29 list=IRAN
 add address=2a0b:7b40::/29 list=IRAN

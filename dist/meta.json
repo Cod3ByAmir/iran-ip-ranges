@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-10-16T08:34:02+00:00",
-  "tag": "v2026.10.16",
+  "build_time": "2026-10-17T08:06:46+00:00",
+  "tag": "v2026.10.17",
   "changed": true,
   "sources": {
     "ripestat-country": {
@@ -40,7 +40,7 @@
       "fresh": true,
       "url": "https://www.ipdeny.com/ipv6/ipaddresses/aggregated/ir-aggregated.zone",
       "error": "",
-      "prefixes": 572,
+      "prefixes": 574,
       "dropped_by_normalize": 0
     },
     "iwik-geolite2": {
@@ -64,7 +64,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/ip2location_country/ip2location_country_ir.netset",
       "error": "",
-      "prefixes": 2024,
+      "prefixes": 1896,
       "dropped_by_normalize": 0
     },
     "dbip-country-lite": {
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 859 ASNs",
       "error": "",
-      "prefixes": 9335,
+      "prefixes": 9328,
       "dropped_by_normalize": 0
     }
   },
@@ -130,12 +130,12 @@
   },
   "output": {
     "ipv4": {
-      "prefixes": 2102,
-      "addresses": 11182023
+      "prefixes": 1979,
+      "addresses": 11146119
     },
     "ipv6": {
-      "prefixes": 766,
-      "addresses": 330514505461139900847603268452352
+      "prefixes": 767,
+      "addresses": 330514506670065720462232443158528
     }
   }
 }
