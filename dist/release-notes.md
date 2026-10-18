@@ -1,6 +1,6 @@
-# Iran IP ranges v2026.10.17
+# Iran IP ranges v2026.10.18
 
-Built 2026-10-17T08:06:46+00:00.
+Built 2026-10-18T08:23:10+00:00.
 
 | Family | Prefixes | Addresses |
 |---|---|---|
@@ -14,7 +14,7 @@ Built 2026-10-17T08:06:46+00:00.
 | ipverse-rir-ipv6 | A | yes | 574 |
 | ipdeny-ipv4 | A | yes | 1972 |
 | ipdeny-ipv6 | A | yes | 574 |
-| iwik-geolite2 | B | yes | 2070 |
+| iwik-geolite2 | B | yes | 2068 |
 | firehol-geolite2 | B | yes | 1874 |
 | firehol-ip2location | B | yes | 1896 |
 | dbip-country-lite | B | yes | 3038 |
