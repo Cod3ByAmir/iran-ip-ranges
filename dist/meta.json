@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-10-21T08:56:07+00:00",
-  "tag": "v2026.10.21",
+  "build_time": "2026-10-22T08:59:02+00:00",
+  "tag": "v2026.10.22",
   "changed": false,
   "sources": {
     "ripestat-country": {
@@ -80,7 +80,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/ir.txt",
       "error": "",
-      "prefixes": 2781,
+      "prefixes": 2782,
       "dropped_by_normalize": 0
     },
     "arastu": {
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 860 ASNs",
       "error": "",
-      "prefixes": 9281,
+      "prefixes": 9277,
       "dropped_by_normalize": 0
     }
   },
