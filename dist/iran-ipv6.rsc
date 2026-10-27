@@ -628,8 +628,11 @@ add address=2a11:e040::/29 list=IRAN
 add address=2a11:f144:a000::/36 list=IRAN
 add address=2a11:f6c0::/29 list=IRAN
 add address=2a11:fe40::/29 list=IRAN
+add address=2a12:2500::/29 list=IRAN
 add address=2a12:2600::/29 list=IRAN
+add address=2a12:2700::/29 list=IRAN
 add address=2a12:2e00::/29 list=IRAN
+add address=2a12:3640::/29 list=IRAN
 add address=2a12:3840::/29 list=IRAN
 add address=2a12:3ec0::/29 list=IRAN
 add address=2a12:5440::/29 list=IRAN
