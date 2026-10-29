@@ -740,6 +740,7 @@ add address=94.24.0.0/20 list=IRAN
 add address=94.24.16.0/21 list=IRAN
 add address=94.24.80.0/20 list=IRAN
 add address=94.24.96.0/21 list=IRAN
+add address=94.26.38.0/24 list=IRAN
 add address=94.74.128.0/18 list=IRAN
 add address=94.101.128.0/20 list=IRAN
 add address=94.101.176.0/20 list=IRAN
