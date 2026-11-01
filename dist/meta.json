@@ -1,7 +1,7 @@
 {
-  "build_time": "2026-10-31T10:01:59+00:00",
-  "tag": "v2026.10.31",
-  "changed": false,
+  "build_time": "2026-11-01T10:51:35+00:00",
+  "tag": "v2026.11.01",
+  "changed": true,
   "sources": {
     "ripestat-country": {
       "tier": "A",
@@ -70,9 +70,9 @@
     "dbip-country-lite": {
       "tier": "B",
       "fresh": true,
-      "url": "https://download.db-ip.com/free/dbip-country-lite-2026-10.csv.gz",
+      "url": "https://download.db-ip.com/free/dbip-country-lite-2026-11.csv.gz",
       "error": "",
-      "prefixes": 3038,
+      "prefixes": 3076,
       "dropped_by_normalize": 0
     },
     "loyalsoldier-geoip": {
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 861 ASNs",
       "error": "",
-      "prefixes": 9300,
+      "prefixes": 9303,
       "dropped_by_normalize": 0
     }
   },
@@ -130,12 +130,12 @@
   },
   "output": {
     "ipv4": {
-      "prefixes": 1981,
-      "addresses": 11146631
+      "prefixes": 1988,
+      "addresses": 11147830
     },
     "ipv6": {
-      "prefixes": 770,
-      "addresses": 332415982570408064564477497966592
+      "prefixes": 774,
+      "addresses": 331782172986329604853908417544192
     }
   }
 }

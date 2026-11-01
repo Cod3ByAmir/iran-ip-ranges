@@ -21,6 +21,7 @@ add address=2001:470:1f29:21a::/64 list=IRAN
 add address=2001:470:482d::/48 list=IRAN
 add address=2001:470:72ca::/48 list=IRAN
 add address=2001:470:72e3::/48 list=IRAN
+add address=2001:470:74b5::/48 list=IRAN
 add address=2001:470:8325::/48 list=IRAN
 add address=2001:470:8825::/48 list=IRAN
 add address=2001:470:f44f::/48 list=IRAN
@@ -202,7 +203,7 @@ add address=2a04:1380::/29 list=IRAN
 add address=2a04:1400::/29 list=IRAN
 add address=2a04:1900::/29 list=IRAN
 add address=2a04:1d42:6100::/40 list=IRAN
-add address=2a04:1d45:6100::/40 list=IRAN
+add address=2a04:1d44:6100::/40 list=IRAN
 add address=2a04:2680::/29 list=IRAN
 add address=2a04:2d40::/29 list=IRAN
 add address=2a04:2d80::/29 list=IRAN
@@ -260,6 +261,7 @@ add address=2a05:2d80::/29 list=IRAN
 add address=2a05:3100::/29 list=IRAN
 add address=2a05:3800::/29 list=IRAN
 add address=2a05:3a80::/48 list=IRAN
+add address=2a05:3a81:1::/48 list=IRAN
 add address=2a05:3e40::/29 list=IRAN
 add address=2a05:4580::/29 list=IRAN
 add address=2a05:49c0::/29 list=IRAN
@@ -516,7 +518,6 @@ add address=2a0d:2880::/29 list=IRAN
 add address=2a0d:3ec0::/29 list=IRAN
 add address=2a0d:4680::/29 list=IRAN
 add address=2a0d:4ac0::/40 list=IRAN
-add address=2a0d:6300::/29 list=IRAN
 add address=2a0d:6600::/29 list=IRAN
 add address=2a0d:7180::/29 list=IRAN
 add address=2a0d:7780::/29 list=IRAN
@@ -581,6 +582,10 @@ add address=2a0f:d640::/29 list=IRAN
 add address=2a0f:ed40::/29 list=IRAN
 add address=2a0f:f1c0::/29 list=IRAN
 add address=2a10:500:4a00::/40 list=IRAN
+add address=2a10:24c0:8088::/46 list=IRAN
+add address=2a10:24c0:808c::/47 list=IRAN
+add address=2a10:24c0:a320::/46 list=IRAN
+add address=2a10:24c0:a324::/47 list=IRAN
 add address=2a10:3a80::/29 list=IRAN
 add address=2a10:4340::/29 list=IRAN
 add address=2a10:5740::/29 list=IRAN
@@ -668,7 +673,6 @@ add address=2a13:6fc0::/29 list=IRAN
 add address=2a13:76c0::/29 list=IRAN
 add address=2a13:7740::/29 list=IRAN
 add address=2a13:7b40::/29 list=IRAN
-add address=2a13:82c4:ff0f::/48 list=IRAN
 add address=2a13:83c0::/29 list=IRAN
 add address=2a13:8540::/29 list=IRAN
 add address=2a13:8600::/29 list=IRAN
