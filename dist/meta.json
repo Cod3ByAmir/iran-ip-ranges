@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-11-01T10:51:35+00:00",
-  "tag": "v2026.11.01",
+  "build_time": "2026-11-02T11:46:09+00:00",
+  "tag": "v2026.11.02",
   "changed": true,
   "sources": {
     "ripestat-country": {
@@ -64,7 +64,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/ip2location_country/ip2location_country_ir.netset",
       "error": "",
-      "prefixes": 1896,
+      "prefixes": 1903,
       "dropped_by_normalize": 0
     },
     "dbip-country-lite": {
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 861 ASNs",
       "error": "",
-      "prefixes": 9303,
+      "prefixes": 9309,
       "dropped_by_normalize": 0
     }
   },
@@ -130,8 +130,8 @@
   },
   "output": {
     "ipv4": {
-      "prefixes": 1988,
-      "addresses": 11147830
+      "prefixes": 1989,
+      "addresses": 11148086
     },
     "ipv6": {
       "prefixes": 774,
