@@ -1,7 +1,7 @@
 {
-  "build_time": "2026-11-05T11:41:19+00:00",
-  "tag": "v2026.11.05",
-  "changed": true,
+  "build_time": "2026-11-06T11:40:16+00:00",
+  "tag": "v2026.11.06",
+  "changed": false,
   "sources": {
     "ripestat-country": {
       "tier": "A",
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 862 ASNs",
       "error": "",
-      "prefixes": 9323,
+      "prefixes": 9343,
       "dropped_by_normalize": 0
     }
   },
