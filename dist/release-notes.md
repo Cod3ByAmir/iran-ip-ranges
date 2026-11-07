@@ -1,6 +1,6 @@
-# Iran IP ranges v2026.11.06
+# Iran IP ranges v2026.11.07
 
-Built 2026-11-06T11:40:16+00:00.
+Built 2026-11-07T10:45:58+00:00.
 
 | Family | Prefixes | Addresses |
 |---|---|---|
@@ -23,6 +23,6 @@ Built 2026-11-06T11:40:16+00:00.
 | ramtiiin | D | yes | 1387 |
 | arvancloud | D | yes | 14 |
 | farshidmousavii | D | yes | 1807 |
-| ripestat-announced | C | yes | 9343 |
+| ripestat-announced | C | yes | 9347 |
 
 Tier D cleaning: 2100 prefixes accepted, 320 rejection records (see rejected-ipv4.txt / rejected-ipv6.txt).
