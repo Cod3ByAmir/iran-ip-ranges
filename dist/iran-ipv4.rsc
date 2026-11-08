@@ -955,6 +955,8 @@ add address=164.138.206.0/24 list=IRAN
 add address=164.215.43.255/32 list=IRAN
 add address=164.215.56.0/21 list=IRAN
 add address=164.215.128.0/17 list=IRAN
+add address=168.113.42.0/24 list=IRAN
+add address=168.113.126.0/23 list=IRAN
 add address=171.22.24.0/22 list=IRAN
 add address=172.80.128.0/17 list=IRAN
 add address=172.94.9.0/24 list=IRAN

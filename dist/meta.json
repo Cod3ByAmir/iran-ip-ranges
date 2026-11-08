@@ -1,13 +1,13 @@
 {
-  "build_time": "2026-11-07T10:45:58+00:00",
-  "tag": "v2026.11.07",
-  "changed": false,
+  "build_time": "2026-11-08T10:50:25+00:00",
+  "tag": "v2026.11.08",
+  "changed": true,
   "sources": {
     "ripestat-country": {
       "tier": "A",
-      "fresh": true,
-      "url": "https://stat.ripe.net/data/country-resource-list/data.json?resource=IR&v4_format=prefix&sourceapp=iran-ip-ranges-github",
-      "error": "",
+      "fresh": false,
+      "url": "",
+      "error": "fetch failed: https://stat.ripe.net/data/country-resource-list/data.json?resource=IR&v4_format=prefix&sourceapp=iran-ip-ranges-github: HTTP Error 500: Internal Server Error",
       "prefixes": 2550,
       "dropped_by_normalize": 0
     },
@@ -48,7 +48,7 @@
       "fresh": true,
       "url": "https://www.iwik.org/ipcountry/IR.cidr",
       "error": "",
-      "prefixes": 2071,
+      "prefixes": 2070,
       "dropped_by_normalize": 0
     },
     "firehol-geolite2": {
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 862 ASNs",
       "error": "",
-      "prefixes": 9347,
+      "prefixes": 9354,
       "dropped_by_normalize": 0
     }
   },
@@ -130,8 +130,8 @@
   },
   "output": {
     "ipv4": {
-      "prefixes": 1992,
-      "addresses": 11148092
+      "prefixes": 1994,
+      "addresses": 11148860
     },
     "ipv6": {
       "prefixes": 777,
