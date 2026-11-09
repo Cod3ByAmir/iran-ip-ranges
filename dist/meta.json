@@ -1,13 +1,13 @@
 {
-  "build_time": "2026-11-08T10:50:25+00:00",
-  "tag": "v2026.11.08",
+  "build_time": "2026-11-09T12:15:27+00:00",
+  "tag": "v2026.11.09",
   "changed": true,
   "sources": {
     "ripestat-country": {
       "tier": "A",
-      "fresh": false,
-      "url": "",
-      "error": "fetch failed: https://stat.ripe.net/data/country-resource-list/data.json?resource=IR&v4_format=prefix&sourceapp=iran-ip-ranges-github: HTTP Error 500: Internal Server Error",
+      "fresh": true,
+      "url": "https://stat.ripe.net/data/country-resource-list/data.json?resource=IR&v4_format=prefix&sourceapp=iran-ip-ranges-github",
+      "error": "",
       "prefixes": 2550,
       "dropped_by_normalize": 0
     },
@@ -112,7 +112,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/farshidmousavii/iran-ip-ranges/main/dist/raw/ipv4.txt",
       "error": "",
-      "prefixes": 1807,
+      "prefixes": 1808,
       "dropped_by_normalize": 0
     },
     "ripestat-announced": {
@@ -120,18 +120,18 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 862 ASNs",
       "error": "",
-      "prefixes": 9354,
+      "prefixes": 9382,
       "dropped_by_normalize": 0
     }
   },
   "tier_d": {
-    "accepted_prefixes": 2100,
+    "accepted_prefixes": 2101,
     "rejected_records": 320
   },
   "output": {
     "ipv4": {
-      "prefixes": 1994,
-      "addresses": 11148860
+      "prefixes": 1995,
+      "addresses": 11149116
     },
     "ipv6": {
       "prefixes": 777,

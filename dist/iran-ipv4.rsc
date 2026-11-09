@@ -206,6 +206,7 @@ add address=45.158.120.0/22 list=IRAN
 add address=45.159.112.0/22 list=IRAN
 add address=45.159.148.0/22 list=IRAN
 add address=45.159.196.0/22 list=IRAN
+add address=45.202.13.0/24 list=IRAN
 add address=45.248.164.0/22 list=IRAN
 add address=46.18.248.0/21 list=IRAN
 add address=46.28.72.0/21 list=IRAN
