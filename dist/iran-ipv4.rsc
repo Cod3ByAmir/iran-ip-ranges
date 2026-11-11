@@ -76,6 +76,7 @@ add address=31.47.32.0/19 list=IRAN
 add address=31.56.17.0/24 list=IRAN
 add address=31.56.54.0/24 list=IRAN
 add address=31.56.89.0/24 list=IRAN
+add address=31.57.21.0/24 list=IRAN
 add address=31.58.237.0/24 list=IRAN
 add address=31.59.169.0/24 list=IRAN
 add address=31.130.176.0/20 list=IRAN

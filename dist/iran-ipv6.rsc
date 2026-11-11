@@ -247,6 +247,7 @@ add address=2a04:ab40::/29 list=IRAN
 add address=2a04:acc0::/29 list=IRAN
 add address=2a04:c140::/29 list=IRAN
 add address=2a04:da40::/29 list=IRAN
+add address=2a04:dac0::/29 list=IRAN
 add address=2a04:e680::/29 list=IRAN
 add address=2a04:f080::/29 list=IRAN
 add address=2a04:fa40::/29 list=IRAN
