@@ -208,9 +208,6 @@ add address=2a04:2680::/29 list=IRAN
 add address=2a04:2d40::/29 list=IRAN
 add address=2a04:2d80::/29 list=IRAN
 add address=2a04:2f00::/29 list=IRAN
-add address=2a04:4e41:80:8100::/56 list=IRAN
-add address=2a04:4e41:84:8100::/56 list=IRAN
-add address=2a04:4e41:88:8100::/56 list=IRAN
 add address=2a04:5040::/32 list=IRAN
 add address=2a04:5100::/29 list=IRAN
 add address=2a04:6980::/29 list=IRAN
