@@ -775,7 +775,7 @@ add address=94.183.172.0/23 list=IRAN
 add address=94.183.175.0/24 list=IRAN
 add address=94.183.176.0/24 list=IRAN
 add address=94.183.180.0/23 list=IRAN
-add address=94.183.192.0/24 list=IRAN
+add address=94.183.192.0/23 list=IRAN
 add address=94.183.207.0/24 list=IRAN
 add address=94.183.210.0/23 list=IRAN
 add address=94.183.215.0/24 list=IRAN
@@ -932,6 +932,8 @@ add address=152.89.153.0/24 list=IRAN
 add address=152.89.154.0/23 list=IRAN
 add address=153.51.0.0/19 list=IRAN
 add address=153.51.128.0/19 list=IRAN
+add address=154.80.129.0/24 list=IRAN
+add address=154.80.131.0/24 list=IRAN
 add address=156.246.162.0/24 list=IRAN
 add address=156.246.173.0/24 list=IRAN
 add address=157.22.77.0/24 list=IRAN

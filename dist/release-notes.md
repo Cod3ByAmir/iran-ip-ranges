@@ -1,10 +1,10 @@
-# Iran IP ranges v2026.11.13
+# Iran IP ranges v2026.11.14
 
-Built 2026-11-13T11:41:22+00:00.
+Built 2026-11-14T11:02:22+00:00.
 
 | Family | Prefixes | Addresses |
 |---|---|---|
-| IPv4 | 1993 | 11,149,366 |
+| IPv4 | 1995 | 11,150,134 |
 | IPv6 | 775 | 332,415,998,286,443,719,554,656,769,146,880 |
 
 | Source | Tier | Fresh | Prefixes |
@@ -22,7 +22,7 @@ Built 2026-11-13T11:41:22+00:00.
 | arastu | D | yes | 1525 |
 | ramtiiin | D | yes | 1387 |
 | arvancloud | D | yes | 14 |
-| farshidmousavii | D | yes | 1809 |
-| ripestat-announced | C | yes | 9379 |
+| farshidmousavii | D | yes | 1814 |
+| ripestat-announced | C | yes | 9385 |
 
-Tier D cleaning: 2102 prefixes accepted, 320 rejection records (see rejected-ipv4.txt / rejected-ipv6.txt).
+Tier D cleaning: 2107 prefixes accepted, 320 rejection records (see rejected-ipv4.txt / rejected-ipv6.txt).
