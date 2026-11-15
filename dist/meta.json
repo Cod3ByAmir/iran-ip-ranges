@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-11-14T11:02:22+00:00",
-  "tag": "v2026.11.14",
+  "build_time": "2026-11-15T11:36:44+00:00",
+  "tag": "v2026.11.15",
   "changed": true,
   "sources": {
     "ripestat-country": {
@@ -48,7 +48,7 @@
       "fresh": true,
       "url": "https://www.iwik.org/ipcountry/IR.cidr",
       "error": "",
-      "prefixes": 2071,
+      "prefixes": 2094,
       "dropped_by_normalize": 0
     },
     "firehol-geolite2": {
@@ -112,7 +112,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/farshidmousavii/iran-ip-ranges/main/dist/raw/ipv4.txt",
       "error": "",
-      "prefixes": 1814,
+      "prefixes": 1815,
       "dropped_by_normalize": 0
     },
     "ripestat-announced": {
@@ -120,18 +120,18 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 863 ASNs",
       "error": "",
-      "prefixes": 9385,
+      "prefixes": 9377,
       "dropped_by_normalize": 0
     }
   },
   "tier_d": {
-    "accepted_prefixes": 2107,
+    "accepted_prefixes": 2108,
     "rejected_records": 320
   },
   "output": {
     "ipv4": {
-      "prefixes": 1995,
-      "addresses": 11150134
+      "prefixes": 1997,
+      "addresses": 11150646
     },
     "ipv6": {
       "prefixes": 775,
