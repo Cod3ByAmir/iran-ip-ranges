@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-11-15T11:36:44+00:00",
-  "tag": "v2026.11.15",
+  "build_time": "2026-11-16T12:09:38+00:00",
+  "tag": "v2026.11.16",
   "changed": true,
   "sources": {
     "ripestat-country": {
@@ -64,7 +64,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/ip2location_country/ip2location_country_ir.netset",
       "error": "",
-      "prefixes": 1903,
+      "prefixes": 1910,
       "dropped_by_normalize": 0
     },
     "dbip-country-lite": {
@@ -130,8 +130,8 @@
   },
   "output": {
     "ipv4": {
-      "prefixes": 1997,
-      "addresses": 11150646
+      "prefixes": 1998,
+      "addresses": 11150710
     },
     "ipv6": {
       "prefixes": 775,
