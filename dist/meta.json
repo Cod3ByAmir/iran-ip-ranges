@@ -1,7 +1,7 @@
 {
-  "build_time": "2026-11-17T12:35:18+00:00",
-  "tag": "v2026.11.17",
-  "changed": false,
+  "build_time": "2026-11-18T12:23:31+00:00",
+  "tag": "v2026.11.18",
+  "changed": true,
   "sources": {
     "ripestat-country": {
       "tier": "A",
@@ -16,7 +16,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/ipverse/rir-ip/master/country/ir/ipv4-aggregated.txt",
       "error": "",
-      "prefixes": 1747,
+      "prefixes": 1748,
       "dropped_by_normalize": 0
     },
     "ipverse-rir-ipv6": {
@@ -24,7 +24,7 @@
       "fresh": true,
       "url": "https://raw.githubusercontent.com/ipverse/rir-ip/master/country/ir/ipv6-aggregated.txt",
       "error": "",
-      "prefixes": 578,
+      "prefixes": 577,
       "dropped_by_normalize": 0
     },
     "ipdeny-ipv4": {
@@ -48,7 +48,7 @@
       "fresh": true,
       "url": "https://www.iwik.org/ipcountry/IR.cidr",
       "error": "",
-      "prefixes": 2094,
+      "prefixes": 2079,
       "dropped_by_normalize": 0
     },
     "firehol-geolite2": {
@@ -118,15 +118,15 @@
     "ripestat-announced": {
       "tier": "C",
       "fresh": true,
-      "url": "RIPEstat announced-prefixes for 863 ASNs",
+      "url": "RIPEstat announced-prefixes for 862 ASNs",
       "error": "",
-      "prefixes": 9362,
+      "prefixes": 9390,
       "dropped_by_normalize": 0
     }
   },
   "tier_d": {
-    "accepted_prefixes": 2108,
-    "rejected_records": 320
+    "accepted_prefixes": 2107,
+    "rejected_records": 321
   },
   "output": {
     "ipv4": {

@@ -159,6 +159,7 @@
 158.255.77.238/31	registry country is not IR
 164.215.40.0/21	registry country is not IR
 176.12.64.0/20	registry country is not IR
+176.65.133.0/24	registry country is not IR
 176.110.108.0/22	registry country is not IR
 176.112.192.0/19	registry country is not IR
 176.221.16.0/20	registry country is not IR
