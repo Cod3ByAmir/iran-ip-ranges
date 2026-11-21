@@ -547,6 +547,7 @@ add address=89.219.64.0/18 list=IRAN
 add address=89.219.192.0/18 list=IRAN
 add address=89.221.80.0/20 list=IRAN
 add address=89.235.64.0/18 list=IRAN
+add address=90.96.187.130/32 list=IRAN
 add address=91.92.104.0/24 list=IRAN
 add address=91.92.114.0/24 list=IRAN
 add address=91.92.121.0/24 list=IRAN
