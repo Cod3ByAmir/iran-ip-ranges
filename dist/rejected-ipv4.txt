@@ -28,7 +28,6 @@
 45.65.112.0/22	registry country is not IR
 45.93.168.0/22	registry country is not IR
 45.157.100.0/22	registry country is not IR
-45.202.13.0/24	registry country is not IR
 46.21.80.0/20	registry country is not IR
 46.36.112.0/20	non-IR part of 46.36.96.0/19, IR parts kept
 46.36.112.0/24	registry country is not IR
