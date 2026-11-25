@@ -747,6 +747,7 @@ add address=2a14:6100::/29 list=IRAN
 add address=2a14:6140::/29 list=IRAN
 add address=2a14:67c2:850::/48 list=IRAN
 add address=2a14:67c2:8f5::/48 list=IRAN
+add address=2a14:6e40:3::/48 list=IRAN
 add address=2a14:7300::/29 list=IRAN
 add address=2a14:7580:cf6b::/48 list=IRAN
 add address=2a14:7780::/29 list=IRAN
