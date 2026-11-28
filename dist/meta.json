@@ -1,6 +1,6 @@
 {
-  "build_time": "2026-11-27T13:16:48+00:00",
-  "tag": "v2026.11.27",
+  "build_time": "2026-11-28T12:32:18+00:00",
+  "tag": "v2026.11.28",
   "changed": false,
   "sources": {
     "ripestat-country": {
@@ -48,7 +48,7 @@
       "fresh": true,
       "url": "https://www.iwik.org/ipcountry/IR.cidr",
       "error": "",
-      "prefixes": 2080,
+      "prefixes": 2084,
       "dropped_by_normalize": 0
     },
     "firehol-geolite2": {
@@ -120,7 +120,7 @@
       "fresh": true,
       "url": "RIPEstat announced-prefixes for 862 ASNs",
       "error": "",
-      "prefixes": 9407,
+      "prefixes": 9406,
       "dropped_by_normalize": 0
     }
   },
